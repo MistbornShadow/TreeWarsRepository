@@ -129,7 +129,7 @@ MonoBehaviour:
   m_BoneTransforms:
   - {fileID: 2540122591753063396}
   m_Bounds:
-    m_Center: {x: 0.04622531, y: -0.0051344633, z: 0}
+    m_Center: {x: 0.04622531, y: -0.0051339865, z: 0}
     m_Extent: {x: 0.39550298, y: 1.2791404, z: 0}
   m_UseBatching: 1
   m_AlwaysUpdate: 1
@@ -233,7 +233,7 @@ MonoBehaviour:
   m_BoneTransforms:
   - {fileID: 7228668230288409481}
   m_Bounds:
-    m_Center: {x: -0.030082002, y: 0.08235815, z: 0}
+    m_Center: {x: -0.03008224, y: 0.08235839, z: 0}
     m_Extent: {x: 0.2288862, y: 0.3171575, z: 0}
   m_UseBatching: 1
   m_AlwaysUpdate: 1
@@ -336,7 +336,7 @@ MonoBehaviour:
   m_BoneTransforms:
   - {fileID: 1421358311280568738}
   m_Bounds:
-    m_Center: {x: -0.030963182, y: -0.5629864, z: 0}
+    m_Center: {x: -0.030962706, y: -0.5629864, z: 0}
     m_Extent: {x: 0.41093528, y: 0.26067972, z: 0}
   m_UseBatching: 1
   m_AlwaysUpdate: 1
@@ -502,7 +502,7 @@ MonoBehaviour:
   m_BoneTransforms:
   - {fileID: 6468939243846121236}
   m_Bounds:
-    m_Center: {x: -0.32969332, y: -0.48745704, z: 0}
+    m_Center: {x: -0.32969356, y: -0.48745728, z: 0}
     m_Extent: {x: 0.2517209, y: 0.42552096, z: 0}
   m_UseBatching: 1
   m_AlwaysUpdate: 1
@@ -605,7 +605,7 @@ MonoBehaviour:
   m_BoneTransforms:
   - {fileID: 3208458090246501854}
   m_Bounds:
-    m_Center: {x: -0.038038522, y: -0.33066887, z: 0}
+    m_Center: {x: -0.038038284, y: -0.33066887, z: 0}
     m_Extent: {x: 0.33803904, y: 0.35127097, z: 0}
   m_UseBatching: 1
   m_AlwaysUpdate: 1
@@ -812,7 +812,7 @@ MonoBehaviour:
   m_BoneTransforms:
   - {fileID: 1522127275357204004}
   m_Bounds:
-    m_Center: {x: 0.022684813, y: 0.0857977, z: 0}
+    m_Center: {x: 0.02268529, y: 0.0857977, z: 0}
     m_Extent: {x: 0.231291, y: 0.31732655, z: 0}
   m_UseBatching: 1
   m_AlwaysUpdate: 1
@@ -917,8 +917,9 @@ GameObject:
   - component: {fileID: 8148713796228168039}
   - component: {fileID: 7240999105110392349}
   - component: {fileID: 2701162470162714772}
-  - component: {fileID: 3105777140327922694}
   - component: {fileID: 4583984101597379986}
+  - component: {fileID: 7820870477680274804}
+  - component: {fileID: 8643215207072970748}
   m_Layer: 0
   m_Name: knightWinter
   m_TagString: Untagged
@@ -987,20 +988,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &3105777140327922694
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6941878645986710547}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66ceed94cd3eb5d459fc92242407b06d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animator: {fileID: 7240999105110392349}
-  walking: 0
 --- !u!61 &4583984101597379986
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1027,6 +1014,38 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.2567856, y: 2.3572962}
   m_EdgeRadius: 0
+--- !u!114 &7820870477680274804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6941878645986710547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8013584e1418a0941a8b9b4a57c6a6b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _unit: {fileID: 11400000, guid: 9e856642728716f43922045fba194a9b, type: 2}
+  front: {fileID: 0}
+  animator: {fileID: 7240999105110392349}
+  walking: 0
+  enemy: 0
+--- !u!114 &8643215207072970748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6941878645986710547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2a838b7c05645a40a12dbefc9bdaae3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 7240999105110392349}
+  _unit: {fileID: 11400000, guid: 9e856642728716f43922045fba194a9b, type: 2}
+  unitHealth: 0
 --- !u!1 &7426057292316322466
 GameObject:
   m_ObjectHideFlags: 0
@@ -1191,7 +1210,7 @@ MonoBehaviour:
   m_BoneTransforms:
   - {fileID: 6315196581915489648}
   m_Bounds:
-    m_Center: {x: -0.23264515, y: 0.51909643, z: 0}
+    m_Center: {x: -0.23264492, y: 0.5190962, z: 0}
     m_Extent: {x: 0.8600625, y: 0.7426118, z: 0}
   m_UseBatching: 1
   m_AlwaysUpdate: 1

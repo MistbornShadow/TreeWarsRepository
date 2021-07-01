@@ -6,12 +6,11 @@ namespace TW.SpawnBehavior
 {
     public class SpawnScript : MonoBehaviour
     {
-        public GameObject unitKnight;
-        // Update is called once per frame
+        public GameObject unitSpawn;
 
         public void SpawnKnight()
         {
-            Instantiate(unitKnight, transform.position, Quaternion.identity);
+            Instantiate(unitSpawn, transform.position, Quaternion.identity);
         }
     }
 }

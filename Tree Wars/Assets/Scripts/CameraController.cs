@@ -44,6 +44,11 @@ public class CameraController : MonoBehaviour
     {
 
         Movement();
+
+        transform.position = new Vector3(
+            Mathf.Clamp(transform.position.x, -9f, 16f),
+            -4.3f,
+            -1f);
     }
 
 
