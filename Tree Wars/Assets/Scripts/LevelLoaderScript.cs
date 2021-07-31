@@ -23,7 +23,7 @@ public class LevelLoaderScript : MonoBehaviour
     }
 
     public void transitionToLobbyAsGuest(){
-
+        SceneManager.LoadScene("Lobby");
     }
 
     public void transitionToSearching()

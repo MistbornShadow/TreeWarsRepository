@@ -50,10 +50,11 @@ wss.on('connection', (ws)=>{
                 sendServerList(ws)
                 break
             case "join_server":
+                joinServerRequest(parsedData.info, ws)
                 break
         }
 
-        console.log('%o', playerBase)
+        //console.log('%o', playerBase)
        
         // Save that in the global state
         console.log('data state %o', states)
@@ -76,7 +77,6 @@ function playerIDConfirm(info, ws){
 }
 
 function gameIDConfirm(info, ws){
-    console.log(info)
     if(states[info] != null) {
         let obj = new Data("generate_game_ID", "")
         ws.send(JSON.stringify(obj))
@@ -90,7 +90,6 @@ function gameIDConfirm(info, ws){
         switch(parsedData.type){
             case "host_player_ID":
                 createServer(parseInt(info), parsedData.info)
-                console.log('data state %o', states)
                 return
             default:
                 console.log("ERROR: gameIDConfirm" + parsedData.type)
@@ -100,16 +99,29 @@ function gameIDConfirm(info, ws){
 }
 
 function sendServerList(ws){
-    let obj = new Data("server_list", JSON.stringify(states))
-    console.log(JSON.stringify(obj))
-    ws.send(JSON.stringify(obj))
     let keys = Object.keys(states)
-    keys.forEach(element => {
-        let key = new Data("key", element)
-        ws.send(JSON.stringify(key))
-    });
-    obj = new Data("create_server_list", "")
-    ws.send(JSON.stringify(obj))
+    keys.forEach(element =>{
+        var obj = states[element]
+        console.log(obj)
+        if(!obj.full){
+            var server = new Data("server", JSON.stringify(obj))
+            console.log(JSON.stringify(server))
+            ws.send(JSON.stringify(server))
+        }
+    })
+    var final = new Data("create_server_list", "")
+    ws.send(JSON.stringify(final))
+}
+
+function joinServerRequest(s, ws){
+    var nums = s.match(/\d+/g)
+    console.log(states[nums[0]])
+    var server = states[nums[0]]
+    if(!server.full){
+        server.player2 = pareseInt(nums[1])
+    }
+    console.log("server variable: " + server)
+    console.log(states[nums[0]])
 }
 
 function createServer(gameID, info){

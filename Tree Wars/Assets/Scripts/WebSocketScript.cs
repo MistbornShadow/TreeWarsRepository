@@ -4,6 +4,7 @@ using System;
 using WebSocketSharp;
 using UnityEngine;
 using TW.Player;
+using TW.ServerObject;
 
 namespace TW.NetworkBehavior
 {
@@ -32,11 +33,13 @@ namespace TW.NetworkBehavior
     {
         public static WebSocket ws;
 
+        public static bool loadedServers;
+
+        public static GameObject ServerObj;
+
         public static string serverlist = null;
 
-        //List<Server> serverList = new List<Server>();
-        
-        public static Server[] serverList;
+        public static List<Server> serverList = new List<Server>();
         public static PlayerScript player;
 
         public static int playerID;
@@ -50,6 +53,7 @@ namespace TW.NetworkBehavior
             ws.Connect();
             Debug.Log("Connection made");
             generatePlayerID();
+            loadedServers = false;
         }
         public static void recieveMessage(string s)
         {
@@ -64,15 +68,17 @@ namespace TW.NetworkBehavior
                 case "generate_game_ID":
                     generateGameID();
                     break;
-                case "server_list":
-                    serverlist = data.info;
+                case "server":
+                    Debug.Log(data.info);
+                    Server temp = JsonUtility.FromJson<Server>(data.info);
+                    serverList.Add(temp);
                     break;
                 case "key":
                     int key = Int32.Parse(data.info);
                     addKey(key);
                     break;
                 case "create_server_list":
-                    //createServerNode(serverlist);
+                    createServerList();
                     break;
                 case "guest_connect":
                     guestID = Int32.Parse(data.info);
@@ -84,7 +90,6 @@ namespace TW.NetworkBehavior
                     Debug.Log("UKNOWN REQUEST: " + data.type);
                     break;
             }
-             Debug.Log(playerID);
         }
 
         public static void gameExit() {
@@ -154,10 +159,12 @@ namespace TW.NetworkBehavior
             ws.Send(serializeRequest);
         }
 
-        public static void SendJoinRequest()
+        public static void SendJoinRequest(int gameID)
         {
             DataObject request = new DataObject();
             request.type = "join_server";
+            request.info = gameID.ToString() + " " + playerID.ToString();
+            Debug.Log(request.info);
 
             string serializeRequest = JsonUtility.ToJson(request);
             ws.Send(serializeRequest);
@@ -172,8 +179,8 @@ namespace TW.NetworkBehavior
             ws.Send(serializeRequest);
         }
 
-        public static Server createServerNode(){
-            return null;
+        public static void createServerList(){
+            loadedServers = true;
         }
     }
 }
