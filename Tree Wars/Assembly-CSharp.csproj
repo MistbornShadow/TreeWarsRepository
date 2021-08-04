@@ -59,7 +59,6 @@
      <Compile Include="Assets\Scripts\lobbyMenuScript.cs" />
      <Compile Include="Assets\Scripts\TinyTreeScript.cs" />
      <Compile Include="Assets\Scripts\WebSocketScript.cs" />
-     <Compile Include="Assets\Scripts\PlayerScript.cs" />
      <Compile Include="Assets\Scripts\SearchingScript.cs" />
      <Compile Include="Assets\Scripts\HealthBar.cs" />
      <Compile Include="Assets\Scripts\UnitScript.cs" />
@@ -70,6 +69,8 @@
      <Compile Include="Assets\Scripts\Units.cs" />
      <Compile Include="Assets\Scripts\UnitBehaviors.cs" />
      <Compile Include="Assets\Scripts\ServerScript.cs" />
+     <Compile Include="Assets\Scripts\Player.cs" />
+     <Compile Include="Assets\Scripts\PlayerLobby.cs" />
      <None Include="Assets\Knight Files\Read Me.txt" />
      <None Include="Assets\BayatGames\Free Platform Game Assets\Readme.txt" />
  <Reference Include="Unity.Timeline.Editor">

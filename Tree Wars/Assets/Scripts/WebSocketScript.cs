@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System;
 using WebSocketSharp;
 using UnityEngine;
-using TW.Player;
 using TW.ServerObject;
 
 namespace TW.NetworkBehavior
@@ -40,12 +39,13 @@ namespace TW.NetworkBehavior
         public static string serverlist = null;
 
         public static List<Server> serverList = new List<Server>();
-        public static PlayerScript player;
 
         public static int playerID;
         public static int gameID = 0;
         public static int guestID;
+        public static int hostID;
         public static bool joined;
+        public static int title = -1;
 
         public static List<int> keys = new List<int>();
 
@@ -56,6 +56,7 @@ namespace TW.NetworkBehavior
             generatePlayerID();
             loadedServers = false;
         }
+
         public static void recieveMessage(string s)
         {
             var data = JsonUtility.FromJson<DataObject>(s);
@@ -66,6 +67,8 @@ namespace TW.NetworkBehavior
                 case "generate_player_ID":
                     generatePlayerID();
                     break;
+                case "host_player_ID":
+                    hostPlayerID(Int32.Parse(data.info));
                 case "generate_game_ID":
                     generateGameID();
                     break;
@@ -88,7 +91,9 @@ namespace TW.NetworkBehavior
                     gameID = Int32.Parse(data.info);
                     break;
                 case "successful_join":
+                    gameID = Int32.Parse(data.info);
                     joined = true;
+                    title = 2;
                     break;
                 case "unsuccessful_join":
                     joined = false;
@@ -110,6 +115,10 @@ namespace TW.NetworkBehavior
         public static void addKey(int key){
             Debug.Log(key);
             keys.Add(key);
+        }
+
+        public hostPlayerID(int id){
+            hostID = id;
         }
 
         public static void generatePlayerID(){
@@ -161,6 +170,7 @@ namespace TW.NetworkBehavior
             DataObject request = new DataObject();
             request.type = "create_server";
             request.info = playerID.ToString();
+            title = 1;
 
             string serializeRequest = JsonUtility.ToJson(request);
             ws.Send(serializeRequest);
@@ -181,6 +191,24 @@ namespace TW.NetworkBehavior
             DataObject request = new DataObject();
             request.type = "host_player_ID";
             request.info = playerID.ToString();
+
+            string serializeRequest = JsonUtility.ToJson(request);
+            ws.Send(serializeRequest);
+        }
+
+        public static void requestHostID(int gameID){
+            DataObject request = new DataObject();
+            request.type = "request_host";
+            request.data = gameID.ToString();
+
+            string serializeRequest = JsonUtility.ToJson(request);
+            ws.Send(serializeRequest);
+        }
+
+        public static void requestGuestID(int gameID){
+            DataObject request = new DataObject();
+            request.type = "request_guest";
+            request.data = gameID.ToString();
 
             string serializeRequest = JsonUtility.ToJson(request);
             ws.Send(serializeRequest);
