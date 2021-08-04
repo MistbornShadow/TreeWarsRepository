@@ -14,10 +14,7 @@ class Player{
 
 states = {}
 
-playerBase = {
-    
-}
-
+playerBase = {}
 
 class Data {
     constructor(type, info){
@@ -52,6 +49,8 @@ wss.on('connection', (ws)=>{
             case "join_server":
                 joinServerRequest(parsedData.info, ws)
                 break
+            default:
+                console.log("Unknown command: " + parsedData.type)
         }
 
         //console.log('%o', playerBase)
@@ -115,13 +114,16 @@ function sendServerList(ws){
 
 function joinServerRequest(s, ws){
     var nums = s.match(/\d+/g)
-    console.log(states[nums[0]])
     var server = states[nums[0]]
     if(!server.full){
         server.player2 = pareseInt(nums[1])
+        server.full = true
+        let obj = new Data("successful_join", )
     }
-    console.log("server variable: " + server)
-    console.log(states[nums[0]])
+    else{
+        let obj = new Data("unsuccessful_join", "")
+    }
+    ws.send(JSON.stringify(obj))
 }
 
 function createServer(gameID, info){

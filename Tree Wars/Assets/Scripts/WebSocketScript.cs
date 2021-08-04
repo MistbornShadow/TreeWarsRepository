@@ -45,6 +45,7 @@ namespace TW.NetworkBehavior
         public static int playerID;
         public static int gameID = 0;
         public static int guestID;
+        public static bool joined;
 
         public static List<int> keys = new List<int>();
 
@@ -85,6 +86,12 @@ namespace TW.NetworkBehavior
                     break;
                 case "game_ID":
                     gameID = Int32.Parse(data.info);
+                    break;
+                case "successful_join":
+                    joined = true;
+                    break;
+                case "unsuccessful_join":
+                    joined = false;
                     break;
                 default:
                     Debug.Log("UKNOWN REQUEST: " + data.type);
