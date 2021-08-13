@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TW.NetworkBehavior;
 using WebSocketSharp;
+using TW.PlayerLobby;
 
 public class lobbyMenuScript : MonoBehaviour
 {
@@ -31,44 +32,44 @@ public class lobbyMenuScript : MonoBehaviour
 
     void Update(){
         if(lobby.checkFull()){
-            checkPlayerConditions(WebSocketScript.ts, lobby.host, lobby.guest);
+            checkPlayerConditions(WebSocketScript.ts, PlayerLobby.host, PlayerLobby.guest);
             updatePlayerConditions(WebSocketScript.ts);
         }
     }
 
     public void checkPlayerConditions(TeamsState ts, int n1, int n2){
-        if((ts.autumn || ts.winter) == n1){
+        if((ts.autumn == n1) || (ts.winter == n1)){
             ts.player1 = true;
         }
         else ts.player1 = false;
-        if((ts.autumn || ts.winter) == n2){
+        if((ts.autumn == n2) || (ts.winter == n2)){
             ts.player2 = true;
         }
         else ts.player2 = false;
     }
 
-    public void updatePlayerConditions(TeamsState teamsState){
-        if(ts.player1 = true) {
+    public void updatePlayerConditions(TeamsState ts){
+        if(ts.player1 == true) {
             //change position to team chosen
-            if(ts.autumn == lobby.host){
-                host.transform = AutumnTeamPosition.transform;
+            if(ts.autumn == PlayerLobby.host){
+                host.transform.position = AutumnTeamPosition.transform.position;
             }
-            else host.transform = WinterTeamPosition.transform;
+            else host.transform.position = WinterTeamPosition.transform.position;
         }
         else {
             //change position to null
-            host.transform = NullPosition.transform;
+            host.transform.position = NullPosition.transform.position;
         }
-        if(ts.player2 = true) {
+        if(ts.player2 == true) {
             //change position to team chosen
-            if(ts.autumn == lobby.guest){
-                guest.transform = AutumnTeamPosition.transform;
+            if(ts.autumn == PlayerLobby.guest){
+                guest.transform.position = AutumnTeamPosition.transform.position;
             }
-            else guest.transform = WinterTeamPosition.transform;
+            else guest.transform.position = WinterTeamPosition.transform.position;
         }
         else {
             //change position to null
-            guest.transform = NullPosition.transform;
+            guest.transform.position = NullPosition.transform.position;
         }
     }
 

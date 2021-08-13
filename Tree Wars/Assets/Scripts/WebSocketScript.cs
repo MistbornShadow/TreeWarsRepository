@@ -60,7 +60,7 @@ namespace TW.NetworkBehavior
         public static int title = -1;
 
         //class to keep track of whether the team has been selected
-        public static TeamsState ts = new TeamState();
+        public static TeamsState ts = new TeamsState();
 
         public static List<int> keys = new List<int>();
 
@@ -124,7 +124,7 @@ namespace TW.NetworkBehavior
                     joined = false;
                     break;
                 case "update_teams":
-                    recieveTeamsState(data.info)
+                    recieveTeamsState(data.info);
                     break;
                 default:
                     Debug.Log("UKNOWN REQUEST: " + data.type);
@@ -245,14 +245,14 @@ namespace TW.NetworkBehavior
         public static void updateTeamCondition(int i){
             DataObject request = new DataObject();
             request.type = "update_teams";
-            request.info = gameID.ToString() + " " + i.ToString() + " " + playerID.toString();
+            request.info = gameID.ToString() + " " + i.ToString() + " " + playerID.ToString();
 
             string serializeRequest = JsonUtility.ToJson(request);
             ws.Send(serializeRequest);            
         }
 
         public static void recieveTeamsState(string s){
-            var newTS = JsonUtility.FromJson(s);
+            var newTS = JsonUtility.FromJson<TeamsState>(s);
             ts = newTS;
         }
 

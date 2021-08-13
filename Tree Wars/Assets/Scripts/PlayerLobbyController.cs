@@ -12,6 +12,7 @@ public class PlayerLobbyController : MonoBehaviour
         PlayerLobby.guest = num;
     }
     public bool checkFull(){
-        if((PlayerLobby.host != -1) && (PlayerLobby.guest != -1)) PlayerLobby.full = true;
+        if((PlayerLobby.host != -1) && (PlayerLobby.guest != -1)) return true;
+        else return false;
     }
 }
