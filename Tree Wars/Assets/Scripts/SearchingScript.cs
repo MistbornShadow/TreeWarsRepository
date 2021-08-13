@@ -7,7 +7,7 @@ public class SearchingScript : MonoBehaviour
 {
     void Start(){
         //create server list
-        if(!WebSocketScript.joined) WebSocketScript.generateWebsocket();
+        if(!WebSocketScript.joined) WebSocketScript.generateWebsocketGuest();
         WebSocketScript.SendServerListRequest();
         WebSocketScript.ws.OnMessage += (sender, e) => {
             string s = e.Data;

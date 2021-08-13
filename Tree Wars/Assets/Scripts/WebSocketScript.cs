@@ -21,11 +21,23 @@ namespace TW.NetworkBehavior
         public string info;
     }
 
+    [System.Serializable]
+    public class TeamsState
+    {
+        public int autumn;
+        public int winter;
+
+        public bool player1;
+        public bool player2;
+    }
+
     public class Server{
         public bool full;
         public int gameID;
         public int player1;
         public int player2;
+        public int aSelect;
+        public int wSelect;
     }
 
     public static class WebSocketScript
@@ -47,15 +59,27 @@ namespace TW.NetworkBehavior
         public static bool joined;
         public static int title = -1;
 
+        //class to keep track of whether the team has been selected
+        public static TeamsState ts = new TeamState();
+
         public static List<int> keys = new List<int>();
 
-        public static void generateWebsocket(){
+        public static void generateWebsocketHost(){
             ws = new WebSocket("ws://localhost:8080");
             ws.Connect();
             Debug.Log("Connection made");
             generatePlayerID();
             loadedServers = false;
         }
+
+        public static void generateWebsocketGuest(){
+            ws = new WebSocket("ws://Hitokiri-Batosai:8080");
+            ws.Connect();
+            Debug.Log("Connection made");
+            generatePlayerID();
+            loadedServers = false;        
+        }
+
 
         public static void recieveMessage(string s)
         {
@@ -69,6 +93,7 @@ namespace TW.NetworkBehavior
                     break;
                 case "host_player_ID":
                     hostPlayerID(Int32.Parse(data.info));
+                    break;
                 case "generate_game_ID":
                     generateGameID();
                     break;
@@ -98,6 +123,9 @@ namespace TW.NetworkBehavior
                 case "unsuccessful_join":
                     joined = false;
                     break;
+                case "update_teams":
+                    recieveTeamsState(data.info)
+                    break;
                 default:
                     Debug.Log("UKNOWN REQUEST: " + data.type);
                     break;
@@ -117,7 +145,7 @@ namespace TW.NetworkBehavior
             keys.Add(key);
         }
 
-        public hostPlayerID(int id){
+        public static void hostPlayerID(int id){
             hostID = id;
         }
 
@@ -199,7 +227,7 @@ namespace TW.NetworkBehavior
         public static void requestHostID(int gameID){
             DataObject request = new DataObject();
             request.type = "request_host";
-            request.data = gameID.ToString();
+            request.info = gameID.ToString();
 
             string serializeRequest = JsonUtility.ToJson(request);
             ws.Send(serializeRequest);
@@ -208,10 +236,24 @@ namespace TW.NetworkBehavior
         public static void requestGuestID(int gameID){
             DataObject request = new DataObject();
             request.type = "request_guest";
-            request.data = gameID.ToString();
+            request.info = gameID.ToString();
 
             string serializeRequest = JsonUtility.ToJson(request);
             ws.Send(serializeRequest);
+        }
+
+        public static void updateTeamCondition(int i){
+            DataObject request = new DataObject();
+            request.type = "update_teams";
+            request.info = gameID.ToString() + " " + i.ToString() + " " + playerID.toString();
+
+            string serializeRequest = JsonUtility.ToJson(request);
+            ws.Send(serializeRequest);            
+        }
+
+        public static void recieveTeamsState(string s){
+            var newTS = JsonUtility.FromJson(s);
+            ts = newTS;
         }
 
         public static void createServerList(){

@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class PlayerLobby
-{
-    public static int host;
-    public static int guest;
-    
+namespace TW.PlayerLobby{
+    public static class PlayerLobby
+    {
+        public static int host = -1;
+        public static int guest = -1;
+        public static bool full;
+    }
 }

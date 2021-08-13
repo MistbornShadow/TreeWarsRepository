@@ -4,6 +4,8 @@ class Server {
         this.gameID = gameID
         this.player1 = player1
         this.player2 = null
+        this.aSelect = -1
+        this.wSelect = -1
     }
 }
 exports.Server = Server

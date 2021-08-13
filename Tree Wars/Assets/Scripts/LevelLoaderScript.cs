@@ -13,7 +13,7 @@ public class LevelLoaderScript : MonoBehaviour
 
     public void transitionToLobbyAsHost()
     {
-        WebSocketScript.generateWebsocket();
+        WebSocketScript.generateWebsocketHost();
         WebSocketScript.generateGameID();
         WebSocketScript.ws.OnMessage += (sender, e) => {
             string s = e.Data;

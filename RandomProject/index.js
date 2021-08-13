@@ -1,16 +1,12 @@
 const {Unit} = require('./Unit')
 const {Server} = require('./Server')
+const {Player} = require('./Player')
+const {Game} = require('./Game')
 const WebSocket = require('ws')
 const port = 8080
-const wss = new WebSocket.Server({port}, ()=>{
+const wss = new WebSocket.Server({port}, () => {
     console.log('server started')
 })
-
-class Player{
-    constructor(state){
-        this.state = state
-    }
-}
 
 states = {}
 
@@ -23,11 +19,18 @@ class Data {
     }
 }
 
+class TeamsState {
+    constructor(a, w, p1, p2){
+        this.autumn = a;
+        this.winter = w;
+
+        this.player1 = p1;
+        this.player2 = p2;
+    }
+}
+
 wss.on('connection', (ws)=>{
     console.log('connection found')
-    console.log(ws)
-    console.log(toString(ws))
-    ws.send("welcome")
 
     ws.on('message', (data)=>{
         parsedData = JSON.parse(data)
@@ -42,6 +45,7 @@ wss.on('connection', (ws)=>{
                 break
             case "game_ID":
                 gameIDConfirm(parsedData.info, ws)
+                break
             case "spawn_unit":
                 ws.send("Spawn Message Accepted")
                 break
@@ -57,16 +61,72 @@ wss.on('connection', (ws)=>{
                 break
             case "request_guest":
                 sendServerGuestID(parsedData.info, ws)
+                break
+            case "update_teams":
+                updateTeams(parsedData.info, ws)
+                break
             default:
                 console.log("Unknown command: " + parsedData.type)
         }
 
-        //console.log('%o', playerBase)
+        console.log('%o', Object.keys(playerBase))
        
         // Save that in the global state
         console.log('data state %o', states)
     })
 });
+
+function updateTeams(info){
+    //num[0] is the gameID, nums[1] is the kind of request, and nums[2] is the requester's playerID
+    var nums = info.match(/\d+/g);
+    var obj
+    var p1;
+    var p2;
+    let server = states[nums[0]]
+    switch(nums[1]){
+        //player is requesting nullification of team selection. Replace requested team with -1, indicating not selected
+        case 0:
+            if(server.aSelect === nums[2]) server.aSelect = -1
+            else if (server.wSelect === nums[2]) server.wSelect = -1
+            else return
+            break;
+        //player requesting to join team autumn. If team autumn equals -1 (indicating not chosen), player is fitted to autumn team
+        case 1:
+            if(server.aSelect === -1) server.aSelect = nums[2]
+            else return
+            break;
+        //same as case 1, but for team winter.
+        case 2:
+            if(server.wSelect === -1) server.wSelect = nums[2]
+            else return
+            break;
+        default:
+            console.log("Issue within the 'update teams' function")
+            console.log(nums)
+    }
+    p1 = checkForPlayer1(server)
+    p2 = checkForPlayer2(server)
+    obj = new TeamsState(server.aSelect, server.wSelect, p1, p2)
+    playersMessage(server, obj)
+}
+
+function checkForPlayer1(server){
+    if(server.aSelect === server.player1 || server.wSelect === server.player1) return true;
+    else return false;
+}
+
+function checkForPlayer2(server){
+    if(server.aSelect === server.player2 || server.wSelect === server.player2) return true;
+    else return false;
+}
+
+function playersMessage(server, obj){
+    var player
+    player = playerBase[server.player1]
+    player.ws.send(JSON.stringify(obj))
+    player = playerBase[server.player2]
+    if(player !== null) player.ws.send(JSON.stringify(obj))
+}
 
 function deletePlayer(info){
     console.log(info)
@@ -92,7 +152,7 @@ function playerIDConfirm(info, ws){
         ws.send(JSON.stringify(obj))
         return
     }
-    playerBase[info] = new Player(true)
+    playerBase[info] = new Player(ws, info)
 }
 
 function gameIDConfirm(info, ws){
@@ -149,6 +209,8 @@ function joinServerRequest(s, ws){
 function createServer(gameID, info){
     states[gameID] = new Server(false, gameID, parseInt(info))
 }
+
+
 
 wss.on('listening', ()=>{
     console.log(`server is listening on port ${port}`)
