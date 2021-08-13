@@ -130,13 +130,18 @@ function playersMessage(server, obj){
 
 function deletePlayer(info){
     console.log(info)
-    delete playerBase[parseInt(info, 10)]
+    var nums = info.match(/\d+/g);
+    delete playerBase[nums[0]]
+    delete states[nums[1]]
 }
 
 function sendServerHostID(info, ws){
     let server = states[parseInt(info)]
     let obj = new Data("host_player_ID", toString(server.player1))
     ws.send(JSON.stringify(obj))
+    let host = playerBase[server.player1]
+    let obj2 = new Data("guest_player_ID", toString(server.player2))
+    host.ws.send(JSON.stringify(obj2))
 }
 
 function sendServerGuestID(info, ws){

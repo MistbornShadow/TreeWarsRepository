@@ -10,7 +10,7 @@ using TW.PlayerLobby;
 public class lobbyMenuScript : MonoBehaviour
 {
     public Text gameIDText;
-    public static PlayerLobbyController lobby;
+    public PlayerLobbyController lobby;
 
     public GameObject host;
     public GameObject guest;
@@ -31,10 +31,17 @@ public class lobbyMenuScript : MonoBehaviour
     }
 
     void Update(){
-        if(lobby.checkFull()){
+        if(WebSocketScript.guestID != -1){
+            lobby.addGuestID(WebSocketScript.guestID);
+        }
+        if(false){
             checkPlayerConditions(WebSocketScript.ts, PlayerLobby.host, PlayerLobby.guest);
             updatePlayerConditions(WebSocketScript.ts);
         }
+    }
+
+    void OnApplicationQuit() {
+        WebSocketScript.gameExit();
     }
 
     public void checkPlayerConditions(TeamsState ts, int n1, int n2){

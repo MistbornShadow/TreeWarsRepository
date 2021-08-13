@@ -73,7 +73,7 @@ namespace TW.NetworkBehavior
         }
 
         public static void generateWebsocketGuest(){
-            ws = new WebSocket("ws://Hitokiri-Batosai:8080");
+            ws = new WebSocket("ws://50.30.151.84:8080");
             ws.Connect();
             Debug.Log("Connection made");
             generatePlayerID();
@@ -126,6 +126,9 @@ namespace TW.NetworkBehavior
                 case "update_teams":
                     recieveTeamsState(data.info);
                     break;
+                case "guest_player_ID":
+                    guestID = Int32.Parse(data.info);
+                    break;
                 default:
                     Debug.Log("UKNOWN REQUEST: " + data.type);
                     break;
@@ -135,7 +138,7 @@ namespace TW.NetworkBehavior
         public static void gameExit() {
             DataObject obj = new DataObject();
             obj.type = "game_exit";
-            obj.info = playerID.ToString();
+            obj.info = playerID.ToString() + " " + gameID.ToString();
             string serializeObj = JsonUtility.ToJson(obj);
             ws.Send(serializeObj);
         }

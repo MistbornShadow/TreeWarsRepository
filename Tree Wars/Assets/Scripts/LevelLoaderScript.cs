@@ -15,6 +15,7 @@ public class LevelLoaderScript : MonoBehaviour
     {
         WebSocketScript.generateWebsocketHost();
         WebSocketScript.generateGameID();
+        WebSocketScript.title = 1;
         WebSocketScript.ws.OnMessage += (sender, e) => {
             string s = e.Data;
             WebSocketScript.recieveMessage(s);
@@ -27,6 +28,7 @@ public class LevelLoaderScript : MonoBehaviour
             string s = e.Data;
             WebSocketScript.recieveMessage(s);
         };
+        WebSocketScript.title = 2;
         if(WebSocketScript.joined) SceneManager.LoadScene("Lobby");
         else SceneManager.LoadScene("Searching");
     }
