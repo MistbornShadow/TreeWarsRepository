@@ -125,6 +125,8 @@ namespace TW.NetworkBehavior
                     else{
                         joined = true;
                     }
+                    ts.autumn = -1;
+                    ts.winter = -1;
                     break;
                 case "unsuccessful_join":
                     joined = false;
@@ -241,6 +243,7 @@ namespace TW.NetworkBehavior
             DataObject request = new DataObject();
             request.type = "request_host";
             request.info = gameID.ToString();
+            guestID = playerID;
 
             string serializeRequest = JsonUtility.ToJson(request);
             ws.Send(serializeRequest);

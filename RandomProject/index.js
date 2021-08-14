@@ -160,9 +160,9 @@ function deletePlayer(info){
 
 function sendServerHostID(info, ws){
     let server = states[parseInt(info)]
-    let guest = playerBase[parseInt(info)]
+    let guest = playerBase[server.player2]
     let obj = new Data("host_player_ID", toString(server.player1))
-    guest.ws.send(JSON.stringify(obj))
+    if(guest !== null) guest.ws.send(JSON.stringify(obj))
     let host = playerBase[server.player1]
     let obj2 = new Data("guest_player_ID", toString(server.player2))
     host.ws.send(JSON.stringify(obj2))
@@ -213,11 +213,16 @@ function sendServerList(ws){
 function joinServerRequest(s, ws){
     var nums = s.match(/\d+/g);
     var server = states[nums[0]];
-    var obj = new Data("", "");
+    var obj;
     if(!server.full) {
         server.player2 = parseInt(nums[1]);
         server.full = true;
-        obj = new Data("successful_join", toString(server.gameID));
+        let num = server.gameID
+        console.log(num)
+        let str = num.toString();
+        console.log(str)
+        obj = new Data("successful_join", str);
+        console.log(obj)
     } else {
         obj = new Data("unsuccessful_join", "");
     }
