@@ -3,7 +3,9 @@ const {Server} = require('./Server')
 const {Player} = require('./Player')
 const {Game} = require('./Game')
 const WebSocket = require('ws')
-const port = 8080
+const port = 80
+// const path =  'wss://Hitokiri-Batosai'
+
 const wss = new WebSocket.Server({port}, () => {
     console.log('server started')
 })

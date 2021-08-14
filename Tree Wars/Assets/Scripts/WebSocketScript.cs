@@ -65,16 +65,16 @@ namespace TW.NetworkBehavior
         public static List<int> keys = new List<int>();
 
         public static void generateWebsocketHost(){
-            ws = new WebSocket("ws://localhost:8080");
-            ws.Connect();
+            ws = new WebSocket("ws://Hitokiri-Batosai:80");
+            ws.ConnectAsync();
             Debug.Log("Connection made");
             generatePlayerID();
             loadedServers = false;
         }
 
         public static void generateWebsocketGuest(){
-            ws = new WebSocket("ws://50.30.151.84:8080");
-            ws.Connect();
+            ws = new WebSocket("ws://Hitokiri-Batosai:80");
+            ws.ConnectAsync();
             Debug.Log("Connection made");
             generatePlayerID();
             loadedServers = false;        
