@@ -29,7 +29,7 @@ public class LevelLoaderScript : MonoBehaviour
             WebSocketScript.recieveMessage(s);
         };
         WebSocketScript.title = 2;
-        if(WebSocketScript.joined) SceneManager.LoadScene("Lobby");
+        if(true) SceneManager.LoadScene("Lobby");
         else SceneManager.LoadScene("Searching");
     }
 

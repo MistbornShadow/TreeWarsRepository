@@ -56,7 +56,7 @@ namespace TW.NetworkBehavior
         public static int gameID = 0;
         public static int guestID;
         public static int hostID;
-        public static bool joined;
+        public static bool joined = false;
         public static int title = -1;
 
         //class to keep track of whether the team has been selected
@@ -66,7 +66,7 @@ namespace TW.NetworkBehavior
 
         public static void generateWebsocketHost(){
             ws = new WebSocket("ws://Hitokiri-Batosai:80");
-            ws.ConnectAsync();
+            ws.Connect();
             Debug.Log("Connection made");
             generatePlayerID();
             loadedServers = false;
@@ -74,7 +74,8 @@ namespace TW.NetworkBehavior
 
         public static void generateWebsocketGuest(){
             ws = new WebSocket("ws://Hitokiri-Batosai:80");
-            ws.ConnectAsync();
+            Debug.Log("Attempting connection...");
+            ws.Connect();
             Debug.Log("Connection made");
             generatePlayerID();
             loadedServers = false;        
@@ -128,6 +129,9 @@ namespace TW.NetworkBehavior
                     break;
                 case "guest_player_ID":
                     guestID = Int32.Parse(data.info);
+                    break;
+                case "message":
+                    Debug.Log(data.info);
                     break;
                 default:
                     Debug.Log("UKNOWN REQUEST: " + data.type);
@@ -207,11 +211,12 @@ namespace TW.NetworkBehavior
             ws.Send(serializeRequest);
         }
 
-        public static void SendJoinRequest(int gameID)
+        public static void SendJoinRequest(int gID)
         {
             DataObject request = new DataObject();
             request.type = "join_server";
-            request.info = gameID.ToString() + " " + playerID.ToString();
+            gameID = gID;
+            request.info = gID.ToString() + " " + playerID.ToString();
             Debug.Log(request.info);
 
             string serializeRequest = JsonUtility.ToJson(request);
@@ -255,8 +260,10 @@ namespace TW.NetworkBehavior
         }
 
         public static void recieveTeamsState(string s){
+            Debug.Log(s);
             var newTS = JsonUtility.FromJson<TeamsState>(s);
             ts = newTS;
+            Debug.Log(ts.autumn + " " + ts.winter);
         }
 
         public static void createServerList(){
