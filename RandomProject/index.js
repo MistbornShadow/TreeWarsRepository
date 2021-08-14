@@ -160,8 +160,9 @@ function deletePlayer(info){
 
 function sendServerHostID(info, ws){
     let server = states[parseInt(info)]
+    let guest = playerBase[parseInt(info)]
     let obj = new Data("host_player_ID", toString(server.player1))
-    ws.send(JSON.stringify(obj))
+    guest.ws.send(JSON.stringify(obj))
     let host = playerBase[server.player1]
     let obj2 = new Data("guest_player_ID", toString(server.player2))
     host.ws.send(JSON.stringify(obj2))

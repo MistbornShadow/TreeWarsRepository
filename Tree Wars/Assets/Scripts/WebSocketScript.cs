@@ -121,7 +121,6 @@ namespace TW.NetworkBehavior
                     if(title != 1){
                         gameID = Int32.Parse(data.info);
                         joined = true;
-                        title = 2;
                     }
                     else{
                         joined = true;
@@ -266,10 +265,8 @@ namespace TW.NetworkBehavior
         }
 
         public static void recieveTeamsState(string s){
-            Debug.Log(s);
             var newTS = JsonUtility.FromJson<TeamsState>(s);
             ts = newTS;
-            Debug.Log(ts.autumn + " " + ts.winter);
         }
 
         public static void createServerList(){
