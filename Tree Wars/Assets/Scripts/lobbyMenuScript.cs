@@ -34,7 +34,7 @@ public class lobbyMenuScript : MonoBehaviour
         if(WebSocketScript.guestID != -1){
             lobby.addGuestID(WebSocketScript.guestID);
         }
-        if(false){
+        if(joined){
             checkPlayerConditions(WebSocketScript.ts, PlayerLobby.host, PlayerLobby.guest);
             updatePlayerConditions(WebSocketScript.ts);
         }

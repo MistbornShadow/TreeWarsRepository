@@ -67,6 +67,9 @@ wss.on('connection', (ws)=>{
             case "update_teams":
                 updateTeams(parsedData.info, ws)
                 break
+            case "host_player_ID":
+                createServerWrapper(parsedData.info)
+                break
             default:
                 console.log("Unknown command: " + parsedData.type)
         }
@@ -98,11 +101,13 @@ function updateTeams(info){
         //player requesting to join team autumn. If team autumn equals -1 (indicating not chosen), player is fitted to autumn team
         case 1:
             if(server.aSelect === -1) server.aSelect = playerID
+            if(server.wSelect === playerID) server.wSelect = -1
             else return
             break;
         //same as case 1, but for team winter.
         case 2:
             if(server.wSelect === -1) server.wSelect = playerID
+            if(server.aSelect === playerID) server.aSelect = -1
             else return
             break;
         default:
@@ -126,6 +131,13 @@ function checkForPlayer2(server){
     else return false;
 }
 
+function createServerWrapper(info){
+    var nums = info.match(/\d+/g);
+    var playerID = parseInt(nums[0])
+    var gameID = parseInt(nums[1])
+    createServer(gameID, playerID)
+}
+
 function playersMessage(server, obj){
     var player1, player2
     player1 = playerBase[server.player1]
@@ -134,7 +146,7 @@ function playersMessage(server, obj){
     player1.ws.send(JSON.stringify(obj))
     player2 = playerBase[server.player2]
     let ran2 = new Data("message", "This is for player 2")
-    player2.ws.send(JSON.stringify(ran2))
+    if(player2 !== null) player2.ws.send(JSON.stringify(ran2))
     if(player2 !== null) player2.ws.send(JSON.stringify(obj))
 }
 
@@ -179,17 +191,6 @@ function gameIDConfirm(info, ws){
     let req = new Data("send_player_ID", "")
     console.log(req);
     ws.send(JSON.stringify(req))
-    ws.on('message', (data)=>{
-        parsedData = JSON.parse(data)
-        switch(parsedData.type){
-            case "host_player_ID":
-                createServer(parseInt(info), parsedData.info)
-                return
-            default:
-                console.log("ERROR: gameIDConfirm" + parsedData.type)
-                return
-        }
-    })
 }
 
 function sendServerList(ws){
@@ -218,7 +219,7 @@ function joinServerRequest(s, ws){
     } else {
         obj = new Data("unsuccessful_join", "");
     }
-    ws.send(JSON.stringify(obj));
+    playersMessage(server, obj)
 }
 
 function createServer(gameID, info){

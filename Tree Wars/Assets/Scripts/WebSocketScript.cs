@@ -117,9 +117,14 @@ namespace TW.NetworkBehavior
                     gameID = Int32.Parse(data.info);
                     break;
                 case "successful_join":
-                    gameID = Int32.Parse(data.info);
-                    joined = true;
-                    title = 2;
+                    if(title != -1){
+                        gameID = Int32.Parse(data.info);
+                        joined = true;
+                        title = 2;
+                    }
+                    else{
+                        joined = true;
+                    }
                     break;
                 case "unsuccessful_join":
                     joined = false;
@@ -226,7 +231,7 @@ namespace TW.NetworkBehavior
         public static void SendHostPlayerID(){
             DataObject request = new DataObject();
             request.type = "host_player_ID";
-            request.info = playerID.ToString();
+            request.info = playerID.ToString() + " " + gameID.ToString();
 
             string serializeRequest = JsonUtility.ToJson(request);
             ws.Send(serializeRequest);
