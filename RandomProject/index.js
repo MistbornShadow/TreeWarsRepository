@@ -94,21 +94,21 @@ function updateTeams(info){
     switch(request){
         //player is requesting nullification of team selection. Replace requested team with -1, indicating not selected
         case 0:
-            if(server.aSelect === playerID) server.aSelect = -1
+            if (server.aSelect === playerID) server.aSelect = -1
             else if (server.wSelect === playerID) server.wSelect = -1
             else return
             break;
         //player requesting to join team autumn. If team autumn equals -1 (indicating not chosen), player is fitted to autumn team
         case 1:
-            if(server.aSelect === -1) server.aSelect = playerID
-            if(server.wSelect === playerID) server.wSelect = -1
+            if (server.aSelect === -1) server.aSelect = playerID
             else return
+            if (server.wSelect === playerID) server.wSelect = -1
             break;
         //same as case 1, but for team winter.
         case 2:
-            if(server.wSelect === -1) server.wSelect = playerID
-            if(server.aSelect === playerID) server.aSelect = -1
+            if (server.wSelect === -1) server.wSelect = playerID
             else return
+            if (server.aSelect === playerID) server.aSelect = -1
             break;
         default:
             console.log("Issue within the 'update teams' function")
@@ -117,6 +117,7 @@ function updateTeams(info){
     p1 = checkForPlayer1(server)
     p2 = checkForPlayer2(server)
     obj = new TeamsState(server.aSelect, server.wSelect, p1, p2)
+    console.log(obj)
     let dObject = new Data("update_teams", JSON.stringify(obj))
     playersMessage(server, dObject)
 }

@@ -15,13 +15,17 @@ public class lobbyMenuScript : MonoBehaviour
     public GameObject host;
     public GameObject guest;
 
+    private float time;
+
     //positions for the player objects upon clicking on the team indicated
     public GameObject AutumnTeamPosition;
     public GameObject WinterTeamPosition;
-    public GameObject NullPosition;
+    public GameObject Null1Position;
+    public GameObject Null2Position;
 
     public int gameID;
     void Start(){
+        Debug.Log("Start");
         addGameID();
         addTitle();
         WebSocketScript.ws.OnMessage += (sender, e) => {
@@ -30,13 +34,27 @@ public class lobbyMenuScript : MonoBehaviour
         };
     }
 
+    void Awake(){
+        Debug.Log("Awake");
+        time = 0.0f;
+    }
+
     void Update(){
-        if(WebSocketScript.guestID != -1){
+        time += Time.deltaTime;
+        if (time > 10.0) {
+            Debug.Log("Update: GuestID " + WebSocketScript.guestID + " PlayerLobby guest " + 
+        PlayerLobby.guest + " joined " + WebSocketScript.joined);
+            Debug.Log("Websocket team roster object: " + WebSocketScript.ts.player1 + " " + WebSocketScript.ts.player2 + 
+            " " + WebSocketScript.ts.autumn + " " + WebSocketScript.ts.winter); 
+        time = 0.0f;
+        if(WebSocketScript.guestID != -1 && PlayerLobby.guest == -1){
+            Debug.Log("Added Guest");
             lobby.addGuestID(WebSocketScript.guestID);
         }
-        if(joined){
-            checkPlayerConditions(WebSocketScript.ts, PlayerLobby.host, PlayerLobby.guest);
+        if(WebSocketScript.joined){
+            Debug.Log("Entered joined if");
             updatePlayerConditions(WebSocketScript.ts);
+        }
         }
     }
 
@@ -44,40 +62,46 @@ public class lobbyMenuScript : MonoBehaviour
         WebSocketScript.gameExit();
     }
 
-    public void checkPlayerConditions(TeamsState ts, int n1, int n2){
-        if((ts.autumn == n1) || (ts.winter == n1)){
-            ts.player1 = true;
-        }
-        else ts.player1 = false;
-        if((ts.autumn == n2) || (ts.winter == n2)){
-            ts.player2 = true;
-        }
-        else ts.player2 = false;
-    }
-
     public void updatePlayerConditions(TeamsState ts){
-        if(ts.player1 == true) {
+        Debug.Log("updatePlayerConditions Activated");
+        if(ts.autumn == -1 && ts.winter == -1){
+            host.transform.position = Null1Position.transform.position;
+            guest.transform.position = Null2Position.transform.position;
+        }
+        else if(ts.autumn != -1 && ts.winter == -1) {
+            Debug.Log("ts.autumn != -1");
             //change position to team chosen
             if(ts.autumn == PlayerLobby.host){
                 host.transform.position = AutumnTeamPosition.transform.position;
+                guest.transform.position = Null2Position.transform.position;
             }
-            else host.transform.position = WinterTeamPosition.transform.position;
-        }
-        else {
-            //change position to null
-            host.transform.position = NullPosition.transform.position;
-        }
-        if(ts.player2 == true) {
-            //change position to team chosen
-            if(ts.autumn == PlayerLobby.guest){
+            else {
                 guest.transform.position = AutumnTeamPosition.transform.position;
+                host.transform.position = Null1Position.transform.position;
             }
-            else guest.transform.position = WinterTeamPosition.transform.position;
         }
-        else {
-            //change position to null
-            guest.transform.position = NullPosition.transform.position;
+        else if(ts.winter != -1 && ts.autumn == -1) {
+            Debug.Log("ts.winter != -1");
+            //change position to team chosen
+            if(ts.winter == PlayerLobby.host){
+                host.transform.position = WinterTeamPosition.transform.position;
+                guest.transform.position = Null2Position.transform.position;
+            }
+            else {
+                guest.transform.position = WinterTeamPosition.transform.position;
+                host.transform.position = Null1Position.transform.position;
+            }
         }
+        else{
+            if(ts.autumn == PlayerLobby.host){
+                host.transform.position = AutumnTeamPosition.transform.position;
+                guest.transform.position = WinterTeamPosition.transform.position;
+            }
+            else {
+                guest.transform.position = AutumnTeamPosition.transform.position;
+                host.transform.position = WinterTeamPosition.transform.position;
+            }
+        }        
     }
 
     public void addGameID(){

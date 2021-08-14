@@ -54,7 +54,7 @@ namespace TW.NetworkBehavior
 
         public static int playerID;
         public static int gameID = 0;
-        public static int guestID;
+        public static int guestID = -1;
         public static int hostID;
         public static bool joined = false;
         public static int title = -1;
@@ -117,7 +117,8 @@ namespace TW.NetworkBehavior
                     gameID = Int32.Parse(data.info);
                     break;
                 case "successful_join":
-                    if(title != -1){
+                    Debug.Log("successful join recieved");
+                    if(title != 1){
                         gameID = Int32.Parse(data.info);
                         joined = true;
                         title = 2;
