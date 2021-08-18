@@ -41,7 +41,7 @@ public class lobbyMenuScript : MonoBehaviour
     }
 
     void Update(){
-
+        /*
         if(WebSocketScript.hostID != -1 && PlayerLobby.host == -1){
             lobby.addHostID(WebSocketScript.hostID);
         }
@@ -53,6 +53,7 @@ public class lobbyMenuScript : MonoBehaviour
         if(WebSocketScript.guestID != -1 && PlayerLobby.guest == -1){
             lobby.addGuestID(WebSocketScript.guestID);
         }
+        */
         if(WebSocketScript.joined){
             updatePlayerConditions(WebSocketScript.ts);
         }

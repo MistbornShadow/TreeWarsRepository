@@ -163,7 +163,23 @@ function deletePlayer(info){
     console.log(info)
     var nums = info.match(/\d+/g);
     delete playerBase[nums[0]]
-    delete states[nums[1]]
+    var player = parseInt(nums[0])
+    var server = states[nums[1]]
+    if(server.player1 = player){
+        let player2 = playerBase[server.player2]
+        let obj = new Data("kick", "");
+        player2.ws.send(JSON.stringify(obj))
+        delete states[nums[1]]
+    }
+    else{
+        server.player2 = null;
+        server.full = false;
+        server.aSelect = -1;
+        server.wSelect = -1;
+        let obj = new Data("kick", "")
+        let player1 = playerBase[server.player1];
+        player1.ws.send(JSON.stringify(obj));
+    }
 }
 
 function sendServerHostID(info, ws){

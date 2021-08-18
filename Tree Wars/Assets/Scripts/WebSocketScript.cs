@@ -4,6 +4,7 @@ using System;
 using WebSocketSharp;
 using UnityEngine;
 using TW.ServerObject;
+using UnityEngine.SceneManagement;
 
 namespace TW.NetworkBehavior
 {
@@ -141,6 +142,18 @@ namespace TW.NetworkBehavior
                     break;
                 case "start_game":
                     startGame = true;
+                    break;
+                case "kick":
+                    if(title == 1){
+                        guestID = -1;
+                    }
+                    else{
+                        hostID = -1;
+                        SceneManager.LoadScene("MainMenu");
+                    }
+                    joined = false;
+                    ts.autumn = -1;
+                    ts.winter = -1;
                     break;
                 case "message":
                     Debug.Log(data.info);
