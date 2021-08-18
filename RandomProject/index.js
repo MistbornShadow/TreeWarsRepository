@@ -34,6 +34,8 @@ class TeamsState {
 wss.on('connection', (ws)=>{
     console.log('connection found')
 
+    //createServer(1000, 1337)
+
     ws.on('message', (data)=>{
         parsedData = JSON.parse(data)
         console.log(parsedData)
@@ -70,6 +72,9 @@ wss.on('connection', (ws)=>{
             case "host_player_ID":
                 createServerWrapper(parsedData.info)
                 break
+            case "start_game":
+                startGameFunction(parsedData.info)
+                break
             default:
                 console.log("Unknown command: " + parsedData.type)
         }
@@ -80,6 +85,13 @@ wss.on('connection', (ws)=>{
         console.log('data state %o', states)
     })
 });
+
+function startGameFunction(info){
+    var gameID = parseInt(info);
+    var server = states[gameID];
+    var obj = new Data("start_game", "");
+    playersMessage(server, obj);
+}
 
 function updateTeams(info){
     //num[0] is the gameID, nums[1] is the kind of request, and nums[2] is the requester's playerID
@@ -142,12 +154,8 @@ function createServerWrapper(info){
 function playersMessage(server, obj){
     var player1, player2
     player1 = playerBase[server.player1]
-    let ran = new Data("message", "This is for player 1")
-    player1.ws.send(JSON.stringify(ran))
     player1.ws.send(JSON.stringify(obj))
     player2 = playerBase[server.player2]
-    let ran2 = new Data("message", "This is for player 2")
-    if(player2 !== null) player2.ws.send(JSON.stringify(ran2))
     if(player2 !== null) player2.ws.send(JSON.stringify(obj))
 }
 
@@ -160,9 +168,9 @@ function deletePlayer(info){
 
 function sendServerHostID(info, ws){
     let server = states[parseInt(info)]
-    let guest = playerBase[server.player2]
-    let obj = new Data("host_player_ID", toString(server.player1))
-    if(guest !== null) guest.ws.send(JSON.stringify(obj))
+    var hostID = server.player1.toString();
+    let obj = new Data("host_player_ID", hostID)
+    ws.send(JSON.stringify(obj))
     let host = playerBase[server.player1]
     let obj2 = new Data("guest_player_ID", toString(server.player2))
     host.ws.send(JSON.stringify(obj2))

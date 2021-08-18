@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TW.NetworkBehavior;
 using WebSocketSharp;
 using TW.PlayerLobby;
+using UnityEngine.SceneManagement;
 
 public class lobbyMenuScript : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class lobbyMenuScript : MonoBehaviour
 
     public GameObject host;
     public GameObject guest;
+
+    public bool startGame;
 
     private float time;
 
@@ -34,12 +37,19 @@ public class lobbyMenuScript : MonoBehaviour
     }
 
     void Awake(){
+        time = 0.0f;
     }
 
     void Update(){
+
         if(WebSocketScript.hostID != -1 && PlayerLobby.host == -1){
             lobby.addHostID(WebSocketScript.hostID);
         }
+        else if(WebSocketScript.hostID == -1){
+            WebSocketScript.requestHostID(WebSocketScript.gameID);
+        }
+        
+
         if(WebSocketScript.guestID != -1 && PlayerLobby.guest == -1){
             lobby.addGuestID(WebSocketScript.guestID);
         }
@@ -47,6 +57,9 @@ public class lobbyMenuScript : MonoBehaviour
             updatePlayerConditions(WebSocketScript.ts);
         }
         
+        if(WebSocketScript.startGame){
+            SceneManager.LoadScene("GameScene");
+        }
     }
 
     void OnApplicationQuit() {
@@ -57,16 +70,19 @@ public class lobbyMenuScript : MonoBehaviour
         if(ts.autumn == -1 && ts.winter == -1){
             host.transform.position = Null1Position.transform.position;
             guest.transform.position = Null2Position.transform.position;
+            startGame = false;
         }
         else if(ts.autumn != -1 && ts.winter == -1) {
             //change position to team chosen
             if(ts.autumn == PlayerLobby.host){
                 host.transform.position = AutumnTeamPosition.transform.position;
                 guest.transform.position = Null2Position.transform.position;
+                startGame = false;
             }
             else {
                 guest.transform.position = AutumnTeamPosition.transform.position;
                 host.transform.position = Null1Position.transform.position;
+                startGame = false;
             }
         }
         else if(ts.winter != -1 && ts.autumn == -1) {
@@ -74,22 +90,32 @@ public class lobbyMenuScript : MonoBehaviour
             if(ts.winter == PlayerLobby.host){
                 host.transform.position = WinterTeamPosition.transform.position;
                 guest.transform.position = Null2Position.transform.position;
+                startGame = false;
             }
             else {
                 guest.transform.position = WinterTeamPosition.transform.position;
                 host.transform.position = Null1Position.transform.position;
+                startGame = false;
             }
         }
         else{
             if(ts.autumn == PlayerLobby.host){
                 host.transform.position = AutumnTeamPosition.transform.position;
                 guest.transform.position = WinterTeamPosition.transform.position;
+                startGame = true;
             }
             else {
                 guest.transform.position = AutumnTeamPosition.transform.position;
                 host.transform.position = WinterTeamPosition.transform.position;
+                startGame = true;
             }
         }        
+    }
+
+    public void startGameFunction(){
+        if(startGame && WebSocketScript.playerID == WebSocketScript.hostID){
+            WebSocketScript.startGameFunction();
+        }
     }
 
     public void addGameID(){

@@ -55,9 +55,11 @@ namespace TW.NetworkBehavior
         public static int playerID;
         public static int gameID = 0;
         public static int guestID = -1;
-        public static int hostID;
+        public static int hostID = -1;
         public static bool joined = false;
         public static int title = -1;
+
+        public static bool startGame = false;
 
         //class to keep track of whether the team has been selected
         public static TeamsState ts = new TeamsState();
@@ -137,6 +139,9 @@ namespace TW.NetworkBehavior
                 case "guest_player_ID":
                     guestID = Int32.Parse(data.info);
                     break;
+                case "start_game":
+                    startGame = true;
+                    break;
                 case "message":
                     Debug.Log(data.info);
                     break;
@@ -161,6 +166,17 @@ namespace TW.NetworkBehavior
 
         public static void hostPlayerID(int id){
             hostID = id;
+        }
+
+        public static void startGameFunction(){
+            DataObject obj = new DataObject();
+            obj.type = "start_game";
+            obj.info = gameID.ToString();
+
+            Debug.Log("Starting Game");
+
+            string serializeObj = JsonUtility.ToJson(obj);
+            ws.Send(serializeObj);
         }
 
         public static void generatePlayerID(){
