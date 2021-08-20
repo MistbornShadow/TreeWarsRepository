@@ -41,25 +41,26 @@ public class lobbyMenuScript : MonoBehaviour
     }
 
     void Update(){
-        
-        if(WebSocketScript.hostID != -1 && PlayerLobby.host == -1){
-            lobby.addHostID(WebSocketScript.hostID);
-        }
-        else if(WebSocketScript.hostID == -1){
-            WebSocketScript.requestHostID(WebSocketScript.gameID);
-        }
-        
+        if(WebSocketScript.isServerCreated && !WebSocketScript.isKick){
+            if(WebSocketScript.hostID != -1 && PlayerLobby.host == -1){
+                lobby.addHostID(WebSocketScript.hostID);
+            }
+            else if(WebSocketScript.hostID == -1){
+                WebSocketScript.requestHostID(WebSocketScript.gameID);
+            }
+            
 
-        if(WebSocketScript.guestID != -1 && PlayerLobby.guest == -1){
-            lobby.addGuestID(WebSocketScript.guestID);
-        }
-        
-        if(WebSocketScript.joined){
-            updatePlayerConditions(WebSocketScript.ts);
-        }
-        
-        if(WebSocketScript.startGame){
-            SceneManager.LoadScene("GameScene");
+            if(WebSocketScript.guestID != -1 && PlayerLobby.guest == -1){
+                lobby.addGuestID(WebSocketScript.guestID);
+            }
+            
+            if(WebSocketScript.joined){
+                updatePlayerConditions(WebSocketScript.ts);
+            }
+            
+            if(WebSocketScript.startGame){
+                SceneManager.LoadScene("GameScene");
+            }
         }
     }
 

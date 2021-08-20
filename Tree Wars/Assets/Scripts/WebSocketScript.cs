@@ -59,6 +59,8 @@ namespace TW.NetworkBehavior
         public static int hostID = -1;
         public static bool joined = false;
         public static int title = -1;
+        public static bool isKick = false;
+        public static bool isServerCreated = false;
 
         public static bool startGame = false;
 
@@ -103,8 +105,8 @@ namespace TW.NetworkBehavior
                     break;
                 case "server":
                     Debug.Log(data.info);
-                    int temp = JsonUtility.FromJson<int>(data.info);
-                    serverList.Add(temp);
+                    //int temp = JsonUtility.FromJson<int>(data.info);
+                    serverList.Add(Int32.Parse(data.info));
                     break;
                 case "key":
                     int key = Int32.Parse(data.info);
@@ -149,11 +151,14 @@ namespace TW.NetworkBehavior
                     }
                     else{
                         hostID = -1;
-                        SceneManager.LoadScene("MainMenu");
                     }
                     joined = false;
                     ts.autumn = -1;
                     ts.winter = -1;
+                    isKick = true;
+                    break;
+                case "server_created":
+                    isServerCreated = true;
                     break;
                 case "message":
                     Debug.Log(data.info);

@@ -97,9 +97,9 @@ function startGameFunction(info){
 function updateTeams(info){
     //num[0] is the gameID, nums[1] is the kind of request, and nums[2] is the requester's playerID
     var nums = info.match(/\d+/g);
-    var gameID = parseInt(nums[0])
-    var request = parseInt(nums[1])
-    var playerID = parseInt(nums[2])
+    var gameID = parseInt(nums[0], 10)
+    var request = parseInt(nums[1], 10)
+    var playerID = parseInt(nums[2], 10)
     var obj
     var p1;
     var p2;
@@ -147,8 +147,8 @@ function checkForPlayer2(server){
 
 function createServerWrapper(info){
     var nums = info.match(/\d+/g);
-    var playerID = parseInt(nums[0])
-    var gameID = parseInt(nums[1])
+    var playerID = parseInt(nums[0], 10)
+    var gameID = parseInt(nums[1], 10)
     createServer(gameID, playerID)
 }
 
@@ -185,6 +185,7 @@ function deletePlayer(info){
 
 function sendServerHostID(info, ws){
     let server = states[parseInt(info)]
+    if (server = null) return;
     var hostID = server.player1.toString();
     let obj = new Data("host_player_ID", hostID)
     ws.send(JSON.stringify(obj))
@@ -216,32 +217,18 @@ function gameIDConfirm(info, ws){
         return
     }
     let req = new Data("send_player_ID", "")
-    console.log(req);
     ws.send(JSON.stringify(req))
 }
 
 function sendServerList(ws){
-    states.values()
-        .filter(server => !server.full) // removes servers that are full
-        .forEach(server => {
-            ws.send(new Data("server", JSON.stringify(server.gameID)))
-        }) // sends the gameID for each server
+    for (const gameID in states ){
+        let server = states[gameID]
+        if(!server.full)
+            ws.send(JSON.stringify(new Data("server", JSON.stringify(server.gameID))))
+        } // sends the gameID for each server
 
     let final = new Data("create_server_list", "")
     ws.send(JSON.stringify(final))
-
-    // let serverKeys = Object.keys(states)
-    // serverKeys.forEach(serverKey =>{
-    //     var server = states[serverKey]
-        
-    //     if(!server.full){
-    //         var serverData = new Data("server", JSON.stringify(server))
-    //         ws.send(JSON.stringify(serverData))
-    //     }
-    // })
-
-    // var final = new Data("create_server_list", "")
-    // ws.send(JSON.stringify(final))
 }
 
 function joinServerRequest(s, ws){
@@ -252,11 +239,8 @@ function joinServerRequest(s, ws){
         server.player2 = parseInt(nums[1]);
         server.full = true;
         let num = server.gameID
-        console.log(num)
         let str = num.toString();
-        console.log(str)
         obj = new Data("successful_join", str);
-        console.log(obj)
     } else {
         obj = new Data("unsuccessful_join", "");
     }
@@ -264,7 +248,10 @@ function joinServerRequest(s, ws){
 }
 
 function createServer(gameID, info){
-    states[gameID] = new Server(false, gameID, parseInt(info))
+    var num = parseInt(info, 10)
+    states[gameID] = new Server(false, gameID, num)
+    var player = playerBase[num];
+    player.ws.send(JSON.stringify(new Data("server_created", "")))
 }
 
 
