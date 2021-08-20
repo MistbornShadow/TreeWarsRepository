@@ -151,11 +151,12 @@ namespace TW.NetworkBehavior
                     }
                     else{
                         hostID = -1;
+                        isKick = true;
+                        ws.Close();
                     }
                     joined = false;
                     ts.autumn = -1;
                     ts.winter = -1;
-                    isKick = true;
                     break;
                 case "server_created":
                     isServerCreated = true;

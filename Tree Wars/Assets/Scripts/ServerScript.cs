@@ -21,5 +21,7 @@ public class ServerScript : MonoBehaviour
 
     public void sendJoin(){
         WebSocketScript.SendJoinRequest(gameID);
+        WebSocketScript.isServerCreated = true;
+        WebSocketScript.serverList = new List<int>();
     }
 }

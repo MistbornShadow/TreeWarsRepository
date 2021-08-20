@@ -165,10 +165,12 @@ function deletePlayer(info){
     var nums = info.match(/\d+/g);
     var player = parseInt(nums[0])
     var server = states[nums[1]]
-    if(server.player1 = player){
-        let player2 = playerBase[server.player2]
-        let obj = new Data("kick", "");
-        player2.ws.send(JSON.stringify(obj))
+    if(server.player1 === player){
+        if(server.player2 !== null){
+            let player2 = playerBase[server.player2]
+            let obj = new Data("kick", "");
+            player2.ws.send(JSON.stringify(obj))
+        }
         delete states[nums[1]]
     }
     else{
@@ -185,7 +187,9 @@ function deletePlayer(info){
 
 function sendServerHostID(info, ws){
     let server = states[parseInt(info)]
-    if (server = null) return;
+    console.log(server)
+    if (server === null) return;
+    console.log(server.player1)
     var hostID = server.player1.toString();
     let obj = new Data("host_player_ID", hostID)
     ws.send(JSON.stringify(obj))

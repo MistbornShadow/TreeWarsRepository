@@ -62,6 +62,10 @@ public class lobbyMenuScript : MonoBehaviour
                 SceneManager.LoadScene("GameScene");
             }
         }
+        else if (WebSocketScript.isKick){
+            WebSocketScript.isKick = false;
+            SceneManager.LoadScene("MainMenu");
+        }
     }
 
     void OnApplicationQuit() {
