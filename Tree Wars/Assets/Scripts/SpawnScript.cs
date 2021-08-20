@@ -6,11 +6,11 @@ namespace TW.SpawnBehavior
 {
     public class SpawnScript : MonoBehaviour
     {
-        public GameObject unitSpawn;
+        public GameObject knight;
 
         public void SpawnKnight()
         {
-            Instantiate(unitSpawn, transform.position, Quaternion.identity);
+            Instantiate(knight, transform.position, Quaternion.identity);
         }
     }
 }

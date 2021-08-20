@@ -20,13 +20,13 @@ namespace TW.ServerObject{
         }
         public void CreateList(){
             Debug.Log("Creating ServerList");
-            foreach(Server ser in WebSocketScript.serverList){
+            foreach(int ser in WebSocketScript.serverList){
 
                 GameObject obj = Instantiate(server) as GameObject;
 
                 obj.SetActive(true);
-                obj.GetComponent<ServerScript>().SetID("Game ID: " + ser.gameID);
-                obj.GetComponent<ServerScript>().setInt(ser.gameID);
+                obj.GetComponent<ServerScript>().SetID("Game ID: " + ser);
+                obj.GetComponent<ServerScript>().setInt(ser);
                 obj.transform.SetParent(parent.transform, false);
             }
         }

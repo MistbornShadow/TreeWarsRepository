@@ -89,6 +89,7 @@ wss.on('connection', (ws)=>{
 function startGameFunction(info){
     var gameID = parseInt(info);
     var server = states[gameID];
+    server.Game = new Game();
     var obj = new Data("start_game", "");
     playersMessage(server, obj);
 }
@@ -162,7 +163,6 @@ function playersMessage(server, obj){
 function deletePlayer(info){
     console.log(info)
     var nums = info.match(/\d+/g);
-    delete playerBase[nums[0]]
     var player = parseInt(nums[0])
     var server = states[nums[1]]
     if(server.player1 = player){
@@ -180,6 +180,7 @@ function deletePlayer(info){
         let player1 = playerBase[server.player1];
         player1.ws.send(JSON.stringify(obj));
     }
+    delete playerBase[nums[0]]
 }
 
 function sendServerHostID(info, ws){
@@ -220,18 +221,27 @@ function gameIDConfirm(info, ws){
 }
 
 function sendServerList(ws){
-    let keys = Object.keys(states)
-    keys.forEach(element =>{
-        var obj = states[element]
-        console.log(obj)
-        if(!Boolean(obj.full)){
-            var server = new Data("server", JSON.stringify(obj))
-            console.log(JSON.stringify(server))
-            ws.send(JSON.stringify(server))
-        }
-    })
-    var final = new Data("create_server_list", "")
+    states.values()
+        .filter(server => !server.full) // removes servers that are full
+        .forEach(server => {
+            ws.send(new Data("server", JSON.stringify(server.gameID)))
+        }) // sends the gameID for each server
+
+    let final = new Data("create_server_list", "")
     ws.send(JSON.stringify(final))
+
+    // let serverKeys = Object.keys(states)
+    // serverKeys.forEach(serverKey =>{
+    //     var server = states[serverKey]
+        
+    //     if(!server.full){
+    //         var serverData = new Data("server", JSON.stringify(server))
+    //         ws.send(JSON.stringify(serverData))
+    //     }
+    // })
+
+    // var final = new Data("create_server_list", "")
+    // ws.send(JSON.stringify(final))
 }
 
 function joinServerRequest(s, ws){

@@ -51,7 +51,7 @@ namespace TW.NetworkBehavior
 
         public static string serverlist = null;
 
-        public static List<Server> serverList = new List<Server>();
+        public static List<int> serverList = new List<int>();
 
         public static int playerID;
         public static int gameID = 0;
@@ -103,7 +103,7 @@ namespace TW.NetworkBehavior
                     break;
                 case "server":
                     Debug.Log(data.info);
-                    Server temp = JsonUtility.FromJson<Server>(data.info);
+                    int temp = JsonUtility.FromJson<int>(data.info);
                     serverList.Add(temp);
                     break;
                 case "key":
