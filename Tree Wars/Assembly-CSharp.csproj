@@ -38,6 +38,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\CameraController.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
+     <Compile Include="Assets\Scripts\PlayerLobbyController.cs" />
      <Compile Include="Assets\Scripts\lobbyMenuScript.cs" />
      <Compile Include="Assets\Scripts\TinyTreeScript.cs" />
      <Compile Include="Assets\Scripts\WebSocketScript.cs" />
@@ -52,7 +53,7 @@
      <Compile Include="Assets\Scripts\Units.cs" />
      <Compile Include="Assets\Scripts\UnitBehaviors.cs" />
      <Compile Include="Assets\Scripts\ServerScript.cs" />
-     <Compile Include="Assets\Scripts\PlayerLobbyController.cs" />
+     <Compile Include="Assets\Scripts\GameBehavior.cs" />
      <None Include="Assets\Knight Files\Read Me.txt" />
      <None Include="Assets\BayatGames\Free Platform Game Assets\Readme.txt" />
     <Reference Include="UnityEngine">

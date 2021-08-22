@@ -3,6 +3,7 @@ const {Server} = require('./Server')
 const {Player} = require('./Player')
 const {Game} = require('./Game')
 const WebSocket = require('ws')
+const { Update } = require('./Update')
 const port = 80
 // const path =  'wss://Hitokiri-Batosai'
 
@@ -75,6 +76,9 @@ wss.on('connection', (ws)=>{
             case "start_game":
                 startGameFunction(parsedData.info)
                 break
+            case "update_check":
+                checkForUpdate(parsedData.info);
+                break;
             default:
                 console.log("Unknown command: " + parsedData.type)
         }
@@ -86,12 +90,62 @@ wss.on('connection', (ws)=>{
     })
 });
 
+function addTeamComponent(server){
+    if(server.player1 === server.aSelect){
+        playerBase[server.player1].team = 1;
+        playerBase[server.player2].team = 2;
+    }
+    else{
+        playerBase[server.player1].team = 2;
+        playerBase[server.player2].team = 1;
+    }
+}
+
 function startGameFunction(info){
     var gameID = parseInt(info);
     var server = states[gameID];
-    server.Game = new Game();
+    addTeamComponent(server);
+    server.Game = new Game(playerBase[server.player1], playerBase[server.player2]);
     var obj = new Data("start_game", "");
     playersMessage(server, obj);
+    server.Game.startIntervalIncrease();
+}
+
+function checkForUpdate(info){
+    var nums = info.match(/\d+/g);
+    let playerID = parseInt(nums[0], 10);
+    let gameID = parseInt(nums[1], 10);
+    let game = states[gameID].Game;
+    let dataObj = new Data("update", "");
+    let updateObj = new Update();
+    if(game.update = true){
+        switch (game.updateCommand){
+            case "p1_resource_change":
+                updateObj.command = "resources_update";
+                updateObj.updateObj = JSON.stringify(game.getP1Resource());
+                dataObj.info = JSON.stringify(updateObj);
+                game.player1.ws.send(JSON.stringify(dataObj));
+                break;
+            case "p2_resource_change":
+                updateObj.command = "resources_update";
+                updateObj.updateObj = JSON.stringify(game.getP2Resource());
+                dataObj.info = JSON.stringify(updateObj);
+                game.player2.ws.send(JSON.stringify(dataObj));
+                break;
+            case "both_resource_change":
+                updateObj.command = "resources_update";
+                updateObj.updateObj = JSON.stringify(game.getP1Resource());
+                dataObj.info = JSON.stringify(updateObj);
+                game.player1.ws.send(JSON.stringify(dataObj));
+                updateObj.updateObj = JSON.stringify(game.getP2Resource());
+                dataObj.info = JSON.stringify(updateObj);
+                game.player2.ws.send(JSON.stringify(dataObj));
+                break;
+            default:
+                console.log("ERROR: " + game.updateCommand);
+                break;
+        }
+    }
 }
 
 function updateTeams(info){

@@ -41,6 +41,11 @@ namespace TW.NetworkBehavior
         public int wSelect;
     }
 
+    public class Update{
+        public string command;
+        public string updateObj;
+    }
+
     public static class WebSocketScript
     {
         public static WebSocket ws;
@@ -53,6 +58,8 @@ namespace TW.NetworkBehavior
 
         public static List<int> serverList = new List<int>();
 
+        public static Update currUpdate;
+
         public static int playerID;
         public static int gameID = 0;
         public static int guestID = -1;
@@ -61,6 +68,7 @@ namespace TW.NetworkBehavior
         public static int title = -1;
         public static bool isKick = false;
         public static bool isServerCreated = false;
+        public static bool isUpdateNeeded = false;
 
         public static bool startGame = false;
 
@@ -161,6 +169,10 @@ namespace TW.NetworkBehavior
                 case "server_created":
                     isServerCreated = true;
                     break;
+                case "update":
+                    isUpdateNeeded = true;
+                    currUpdate = JsonUtility.FromJson<Update>(data.info);
+                    break;
                 case "message":
                     Debug.Log(data.info);
                     break;
@@ -168,6 +180,10 @@ namespace TW.NetworkBehavior
                     Debug.Log("UKNOWN REQUEST: " + data.type);
                     break;
             }
+        }
+
+        public static void extractUpdateCommand(){
+
         }
 
         public static void gameExit() {
@@ -309,6 +325,35 @@ namespace TW.NetworkBehavior
 
         public static void createServerList(){
             loadedServers = true;
+        }
+
+        public static void checkForUpdate(){
+            DataObject request = new DataObject();
+            request.type = "update_check";
+            request.info = playerID.ToString() + " " + gameID.ToString();
+
+            string serializeRequest = JsonUtility.ToJson(request);
+            ws.Send(serializeRequest);            
+        }
+
+        public static bool checkIsHost(){
+            if(hostID == playerID) return true;
+            else return false;
+        }
+
+        public static string getUpdateCommand(){
+            return currUpdate.command;
+        }
+
+        public static string getUpdateObjectString(){
+            return currUpdate.updateObj;
+        }
+
+        public static int findTeamSelected(){
+            if(ts.autumn == playerID){
+                return 1;
+            }
+            else return 2;
         }
     }
 }
