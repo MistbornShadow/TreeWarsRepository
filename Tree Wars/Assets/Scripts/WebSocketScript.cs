@@ -182,10 +182,6 @@ namespace TW.NetworkBehavior
             }
         }
 
-        public static void extractUpdateCommand(){
-
-        }
-
         public static void gameExit() {
             DataObject obj = new DataObject();
             obj.type = "game_exit";
@@ -195,7 +191,6 @@ namespace TW.NetworkBehavior
         }
 
         public static void addKey(int key){
-            Debug.Log(key);
             keys.Add(key);
         }
 
@@ -238,10 +233,11 @@ namespace TW.NetworkBehavior
             ws.Send(serializeID);
         }
 
-        public static void SendSpawnMessage()
+        public static void sendSpawnUnitRequest(string unit)
         {
             DataObject spawn = new DataObject();
             spawn.type = "spawn_unit";
+            spawn.info = playerID.ToString() + " " + gameID.ToString() + " " + unit;
 
             Debug.Log("Sending spawn message...");
 

@@ -5,9 +5,12 @@ using UnityEngine;
 using TW.PlayerClass;
 using TW.NetworkBehavior;
 using UnityEngine.UI;
+using TW.SpawnBehavior;
 public class GameBehavior : MonoBehaviour
 {
     Player player;
+    public GameObject winterSpawn;
+    public GameObject autumnSpawn;
 
     public Text resourceText;
 
@@ -17,6 +20,12 @@ public class GameBehavior : MonoBehaviour
 
     string updateCommand;
     string updateObjectString;
+
+    public class SpawnUnit{
+        public int team;
+        public string type;
+        public int newResource;
+    }
     void Start()
     {
         timerUpdate = 0.0f;
@@ -48,6 +57,16 @@ public class GameBehavior : MonoBehaviour
                     player.updateResource(resourceChange);
                     setResourceText();
                     break;
+                case "spawn_unit_winter":
+                    var winterSpawnObj = JsonUtility.FromJson<SpawnUnit>(updateObjectString);
+                    spawnUnit(winterSpawnObj.type, winterSpawn);
+                    if(player.team == winterSpawnObj.team) player.updateResource(winterSpawnObj.newResource);
+                    break;
+                case "spawn_unit_autumn":
+                    var autumnSpawnObj = JsonUtility.FromJson<SpawnUnit>(updateObjectString);
+                    spawnUnit(autumnSpawnObj.type, winterSpawn);
+                    if(player.team == autumnSpawnObj.team) player.updateResource(autumnSpawnObj.newResource);
+                    break;
                 default:
                     Debug.Log("Error: update commmand: " + updateCommand);
                     break;
@@ -58,5 +77,26 @@ public class GameBehavior : MonoBehaviour
 
     public void setResourceText(){
         resourceText.text = player.resource.ToString();
+    }
+
+    public void sendSpawnUnitRequest(string unit){
+        if(checkResourceCost(unit)) WebSocketScript.sendSpawnUnitRequest(unit);
+        else return;
+    }
+
+    public void spawnUnit(string unit, GameObject spawner){
+        spawner.GetComponent<SpawnScript>().mainSpawnFunction(unit);
+    }
+
+    private bool checkResourceCost(string purchase){
+        switch (purchase){
+            case "knight":
+                if(player.resource >= 30) return true;
+                break;
+            default:
+                Debug.Log("ERROR: purchase check " + purchase);
+                break;
+        }
+        return false;
     }
 }

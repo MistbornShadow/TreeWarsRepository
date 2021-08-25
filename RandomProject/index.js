@@ -22,6 +22,14 @@ class Data {
     }
 }
 
+class SpawnUnit{
+    constructor(team, unit, newResource){
+        this.team = team;
+        this.unit = unit;
+        this.newResource = newResource;
+    }
+}
+
 class TeamsState {
     constructor(a, w, p1, p2){
         this.autumn = a;
@@ -52,7 +60,7 @@ wss.on('connection', (ws)=>{
                 gameIDConfirm(parsedData.info, ws)
                 break
             case "spawn_unit":
-                ws.send("Spawn Message Accepted")
+                spawnUnitRequest(parsedData.info);
                 break
             case "get_server_list":
                 //expand to more info: players, etc.
@@ -92,6 +100,81 @@ wss.on('connection', (ws)=>{
     })
 });
 
+function findPlayer(playerID, game){
+    if(game.player1.playerID === playerID) return game.player1;
+    else return game.player2;
+}
+
+function findResourceAutumn(game){
+    var tempPlayer = game.player1
+    if(tempPlayer.team === 1){
+        return game.getP1Resource();
+    }
+    else return game.getP2Resource();
+}
+
+function findResourceWinter(game){
+    var tempPlayer = game.player1
+    if(tempPlayer.team === 2){
+        return game.getP1Resource();
+    }
+    else return game.getP2Resource();
+}
+
+function updatePlayerResources(player, game, cost){
+    if(game.player1.playerID === player.playerID){
+        let tempResource = game.getP1Resource() - cost;
+        if(tempResource >= 0) game.p1Resource = tempResource;
+        else {
+            console.log("ERROR: p1 resource check: " + game.getP1Resource() + " cost: " + cost);
+            return false;
+        }
+    }
+    else{
+        let tempResource = game.getP2Resource() - cost;
+        if(tempResource >= 0) game.p2Resource = tempResource;
+        else {
+            console.log("ERROR: p2 resource check: " + game.getP2Resource() + " cost: " + cost);
+            return false;
+        }
+    }
+}
+
+function spawnUnitRequest(info){
+    var nums = info.match(/\d+/g);
+    let playerID = parseInt(nums[0], 10);
+    let gameID = parseInt(nums[1], 10);
+    let unit = nums[2];
+    console.log(unit);
+    let server = states[gameID];
+    let playerObject = findPlayer(playerID, server.Game);
+    if(playerObject.team == 1)
+        switch(unit){
+            case "knight":
+                if(!updatePlayerResources(player, server.Game, 30)) return;
+                server.Game.AutumnUnits[server.Game.autumnCounter] = Unit.createKnight();
+                server.Game.update = true;
+                server.Game.updateCommand = "spawn_unit_autumn";
+                break;
+            default:
+                console.log("ERROR: spawn unit request");
+                break;
+        }
+    else{
+        switch(unit){
+            case "knight":
+                if(!updatePlayerResources(player, server.Game, 30)) return;
+                server.Game.WinterUnits[server.Game.winterCounter] = Unit.createKnight();
+                server.Game.update = true;
+                server.Game.updateCommand = "spawn_unit_winter";
+                break;
+            default:
+                console.log("ERROR: spawn unit request");
+                break;
+        }
+    }
+}
+
 function addTeamComponent(server){
     if(server.player1 === server.aSelect){
         playerBase[server.player1].team = 1;
@@ -118,6 +201,7 @@ function startGameFunction(info){
     var obj = new Data("start_game", "");
     console.log(server);
     playersMessage(server, obj);
+    //setInterval(updateGameIntervalResourceIncrease(), 300, gameID)
 }
 
 function checkForUpdate(info){
@@ -149,6 +233,22 @@ function checkForUpdate(info){
                 updateObj.updateObj = JSON.stringify(game.getP2Resource());
                 dataObj.info = JSON.stringify(updateObj);
                 game.player2.ws.send(JSON.stringify(dataObj));
+                break;
+            case "spawn_unit_autumn":
+                updateObj.command = "spawn_unit_autumn";
+                updateObj.updateObj = new SpawnUnit(1, "knight", findResourceAutumn(game));
+                dataObj.info = JSON.stringify(updateObj);
+                game.player1.ws.send(JSON.stringify(dataObj));
+                game.player2.ws.send(JSON.stringify(dataObj));
+                game.autumnCounter++;
+                break;
+            case "spawn_unit_winter":
+                updateObj.command = "spawn_unit_winter";
+                updateObj.updateObj = new SpawnUnit(2, "knight", findResourceWinter(game));
+                dataObj.info = JSON.stringify(updateObj);
+                game.player1.ws.send(JSON.stringify(dataObj));
+                game.player2.ws.send(JSON.stringify(dataObj));
+                game.winterCounter++;
                 break;
             default:
                 console.log("ERROR: " + game.updateCommand);
