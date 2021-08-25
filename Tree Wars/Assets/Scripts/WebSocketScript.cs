@@ -355,5 +355,14 @@ namespace TW.NetworkBehavior
             }
             else return 2;
         }
+
+        public static void sendResourceIncreaseRequest(){
+            DataObject request = new DataObject();
+            request.type = "interval_resource_increase";
+            request.info = gameID.ToString();
+
+            string serializeRequest = JsonUtility.ToJson(request);
+            ws.Send(serializeRequest);    
+        }
     }
 }

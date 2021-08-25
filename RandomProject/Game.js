@@ -1,7 +1,7 @@
 class Game {
     constructor(player1, player2) {
-        this.Player1 = player1;
-        this.Player2 = player2;
+        this.player1 = player1;
+        this.player2 = player2;
         this.update = false;
         this.updateCommand = null;
         this.p1Resource = 0;

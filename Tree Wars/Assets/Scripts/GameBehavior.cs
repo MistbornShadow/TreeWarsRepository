@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using TW.PlayerClass;
 using TW.NetworkBehavior;
@@ -10,32 +11,40 @@ public class GameBehavior : MonoBehaviour
 
     public Text resourceText;
 
-    float timer;
+    float timerUpdate;
+    float timerResourceIncrease;
     bool isHost;
 
     string updateCommand;
     string updateObjectString;
     void Start()
     {
-        timer = 0.0f;
+        timerUpdate = 0.0f;
+        timerResourceIncrease = 0.0f;
         player = new Player(WebSocketScript.playerID, WebSocketScript.findTeamSelected());
         isHost = WebSocketScript.checkIsHost();
+        resourceText.text = "0";
     }
 
     // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime;
-        if(timer > 1.0 && isHost) {
+        timerUpdate += Time.deltaTime;
+        timerResourceIncrease += Time.deltaTime;
+        if(timerUpdate > 1.0 && isHost) {
             WebSocketScript.checkForUpdate();
-            timer = 0.0f;
+            timerUpdate = 0.0f;
+        }
+        if(timerResourceIncrease > 3.0 && isHost){
+            WebSocketScript.sendResourceIncreaseRequest();
+            timerResourceIncrease = 0.0f;
         }
         if(WebSocketScript.isUpdateNeeded){
             updateCommand = WebSocketScript.getUpdateCommand();
             updateObjectString = WebSocketScript.getUpdateObjectString();
             switch (updateCommand){
                 case "resources_update":
-                    var resourceChange = JsonUtility.FromJson<int>(updateObjectString);
+                    var resourceChange = Int32.Parse(updateObjectString);
                     player.updateResource(resourceChange);
                     setResourceText();
                     break;
@@ -43,6 +52,7 @@ public class GameBehavior : MonoBehaviour
                     Debug.Log("Error: update commmand: " + updateCommand);
                     break;
             }
+            WebSocketScript.isUpdateNeeded = false;
         }
     }
 

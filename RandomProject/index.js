@@ -79,6 +79,8 @@ wss.on('connection', (ws)=>{
             case "update_check":
                 checkForUpdate(parsedData.info);
                 break;
+            case "interval_resource_increase":
+                updateGameIntervalResourceIncrease(parsedData.info);
             default:
                 console.log("Unknown command: " + parsedData.type)
         }
@@ -101,14 +103,21 @@ function addTeamComponent(server){
     }
 }
 
+function updateGameIntervalResourceIncrease(info){
+    var gameID = parseInt(info);
+    server = states[gameID];
+    console.log("informing game state that it is updated via interval resource increase");
+    server.Game.intervalResourceIncrease();
+}
+
 function startGameFunction(info){
     var gameID = parseInt(info);
     var server = states[gameID];
     addTeamComponent(server);
     server.Game = new Game(playerBase[server.player1], playerBase[server.player2]);
     var obj = new Data("start_game", "");
+    console.log(server);
     playersMessage(server, obj);
-    setInterval(intervalResourceIncreaseIndexFileFunction(server), 300);
 }
 
 function checkForUpdate(info){
@@ -146,10 +155,8 @@ function checkForUpdate(info){
                 break;
         }
     }
-}
-
-function intervalResourceIncreaseIndexFileFunction(server){
-    server.Game.intervalResourceIncrease();
+    console.log(dataObj);
+    game.update = false;
 }
 
 function updateTeams(info){
