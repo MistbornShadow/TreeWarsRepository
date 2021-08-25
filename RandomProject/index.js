@@ -89,6 +89,7 @@ wss.on('connection', (ws)=>{
                 break;
             case "interval_resource_increase":
                 updateGameIntervalResourceIncrease(parsedData.info);
+                break;
             default:
                 console.log("Unknown command: " + parsedData.type)
         }
@@ -144,14 +145,16 @@ function spawnUnitRequest(info){
     var nums = info.match(/\d+/g);
     let playerID = parseInt(nums[0], 10);
     let gameID = parseInt(nums[1], 10);
-    let unit = nums[2];
+    let unit = parseInt(nums[2]);
     console.log(unit);
+    console.log(info);
     let server = states[gameID];
     let playerObject = findPlayer(playerID, server.Game);
-    if(playerObject.team == 1)
+    if(playerObject.team === 1)
         switch(unit){
-            case "knight":
-                if(!updatePlayerResources(player, server.Game, 30)) return;
+            //knight
+            case 1:
+                if(!updatePlayerResources(playerObject, server.Game, 30)) return;
                 server.Game.AutumnUnits[server.Game.autumnCounter] = Unit.createKnight();
                 server.Game.update = true;
                 server.Game.updateCommand = "spawn_unit_autumn";
@@ -162,8 +165,8 @@ function spawnUnitRequest(info){
         }
     else{
         switch(unit){
-            case "knight":
-                if(!updatePlayerResources(player, server.Game, 30)) return;
+            case 1:
+                if(!updatePlayerResources(playerObject, server.Game, 30)) return;
                 server.Game.WinterUnits[server.Game.winterCounter] = Unit.createKnight();
                 server.Game.update = true;
                 server.Game.updateCommand = "spawn_unit_winter";
@@ -173,6 +176,7 @@ function spawnUnitRequest(info){
                 break;
         }
     }
+    checkForUpdate(info);
 }
 
 function addTeamComponent(server){
@@ -201,7 +205,6 @@ function startGameFunction(info){
     var obj = new Data("start_game", "");
     console.log(server);
     playersMessage(server, obj);
-    //setInterval(updateGameIntervalResourceIncrease(), 300, gameID)
 }
 
 function checkForUpdate(info){
@@ -256,6 +259,7 @@ function checkForUpdate(info){
         }
     }
     console.log(dataObj);
+    dataObj = null;
     game.update = false;
 }
 

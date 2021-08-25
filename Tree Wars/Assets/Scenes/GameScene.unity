@@ -961,13 +961,13 @@ MonoBehaviour:
       - m_Target: {fileID: 2059614346}
         m_TargetAssemblyTypeName: GameBehavior, Assembly-CSharp
         m_MethodName: sendSpawnUnitRequest
-        m_Mode: 5
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
-          m_StringArgument: knight
+          m_StringArgument: 1
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1000602156
@@ -2271,8 +2271,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0079245a0016f1f448e14a9ec7ec9565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  winterSpawn: {fileID: 0}
-  autumnSpawn: {fileID: 0}
+  winterSpawn: {fileID: 1795726047}
+  autumnSpawn: {fileID: 1979591493}
   resourceText: {fileID: 196062721}
 --- !u!1 &2063134570
 GameObject:

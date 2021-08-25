@@ -64,7 +64,7 @@ public class GameBehavior : MonoBehaviour
                     break;
                 case "spawn_unit_autumn":
                     var autumnSpawnObj = JsonUtility.FromJson<SpawnUnit>(updateObjectString);
-                    spawnUnit(autumnSpawnObj.type, winterSpawn);
+                    spawnUnit(autumnSpawnObj.type, autumnSpawn);
                     if(player.team == autumnSpawnObj.team) player.updateResource(autumnSpawnObj.newResource);
                     break;
                 default:
@@ -79,7 +79,7 @@ public class GameBehavior : MonoBehaviour
         resourceText.text = player.resource.ToString();
     }
 
-    public void sendSpawnUnitRequest(string unit){
+    public void sendSpawnUnitRequest(int unit){
         if(checkResourceCost(unit)) WebSocketScript.sendSpawnUnitRequest(unit);
         else return;
     }
@@ -88,9 +88,10 @@ public class GameBehavior : MonoBehaviour
         spawner.GetComponent<SpawnScript>().mainSpawnFunction(unit);
     }
 
-    private bool checkResourceCost(string purchase){
+    private bool checkResourceCost(int purchase){
         switch (purchase){
-            case "knight":
+            //knight
+            case 1:
                 if(player.resource >= 30) return true;
                 break;
             default:

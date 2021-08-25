@@ -233,11 +233,11 @@ namespace TW.NetworkBehavior
             ws.Send(serializeID);
         }
 
-        public static void sendSpawnUnitRequest(string unit)
+        public static void sendSpawnUnitRequest(int unit)
         {
             DataObject spawn = new DataObject();
             spawn.type = "spawn_unit";
-            spawn.info = playerID.ToString() + " " + gameID.ToString() + " " + unit;
+            spawn.info = playerID.ToString() + " " + gameID.ToString() + " " + unit.ToString();
 
             Debug.Log("Sending spawn message...");
 
