@@ -108,7 +108,7 @@ function startGameFunction(info){
     server.Game = new Game(playerBase[server.player1], playerBase[server.player2]);
     var obj = new Data("start_game", "");
     playersMessage(server, obj);
-    server.Game.startIntervalIncrease();
+    setInterval(intervalResourceIncreaseIndexFileFunction(server), 300);
 }
 
 function checkForUpdate(info){
@@ -146,6 +146,10 @@ function checkForUpdate(info){
                 break;
         }
     }
+}
+
+function intervalResourceIncreaseIndexFileFunction(server){
+    server.Game.intervalResourceIncrease();
 }
 
 function updateTeams(info){

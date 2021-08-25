@@ -62,9 +62,5 @@ class Game {
     getP2Resource(){
         return this.p2Resource;
     }
-
-    startIntervalIncrease(){
-        window.setInterval(this.intervalResourceIncrease(), 300);
-    }
 }
 exports.Game = Game

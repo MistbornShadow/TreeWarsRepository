@@ -26,7 +26,10 @@ public class GameBehavior : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
-        if(timer > 1.0 && isHost) WebSocketScript.checkForUpdate();
+        if(timer > 1.0 && isHost) {
+            WebSocketScript.checkForUpdate();
+            timer = 0.0f;
+        }
         if(WebSocketScript.isUpdateNeeded){
             updateCommand = WebSocketScript.getUpdateCommand();
             updateObjectString = WebSocketScript.getUpdateObjectString();
