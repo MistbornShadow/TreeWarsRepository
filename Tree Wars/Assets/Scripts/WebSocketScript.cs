@@ -338,10 +338,12 @@ namespace TW.NetworkBehavior
         }
 
         public static string getUpdateCommand(){
+            Debug.Log(currUpdate.command);
             return currUpdate.command;
         }
 
         public static string getUpdateObjectString(){
+            Debug.Log(currUpdate.updateObj);
             return currUpdate.updateObj;
         }
 

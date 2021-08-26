@@ -63,7 +63,9 @@ public class GameBehavior : MonoBehaviour
                     if(player.team == winterSpawnObj.team) player.updateResource(winterSpawnObj.newResource);
                     break;
                 case "spawn_unit_autumn":
+                    Debug.Log(updateObjectString);
                     var autumnSpawnObj = JsonUtility.FromJson<SpawnUnit>(updateObjectString);
+                    Debug.Log(autumnSpawnObj.team);
                     spawnUnit(autumnSpawnObj.type, autumnSpawn);
                     if(player.team == autumnSpawnObj.team) player.updateResource(autumnSpawnObj.newResource);
                     break;

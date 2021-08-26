@@ -124,8 +124,13 @@ function findResourceWinter(game){
 
 function updatePlayerResources(player, game, cost){
     if(game.player1.playerID === player.playerID){
+        console.log("player 1 resources affected");
+        
         let tempResource = game.getP1Resource() - cost;
-        if(tempResource >= 0) game.p1Resource = tempResource;
+        if(tempResource >= 0) {
+            game.p1Resource = tempResource;
+            return true;
+        }
         else {
             console.log("ERROR: p1 resource check: " + game.getP1Resource() + " cost: " + cost);
             return false;
@@ -133,7 +138,10 @@ function updatePlayerResources(player, game, cost){
     }
     else{
         let tempResource = game.getP2Resource() - cost;
-        if(tempResource >= 0) game.p2Resource = tempResource;
+        if(tempResource >= 0) {
+            game.p2Resource = tempResource;
+            return true;
+        }
         else {
             console.log("ERROR: p2 resource check: " + game.getP2Resource() + " cost: " + cost);
             return false;
@@ -155,7 +163,8 @@ function spawnUnitRequest(info){
             //knight
             case 1:
                 if(!updatePlayerResources(playerObject, server.Game, 30)) return;
-                server.Game.AutumnUnits[server.Game.autumnCounter] = Unit.createKnight();
+                let unit = Unit.createKnight();
+                server.Game.AutumnUnits[server.Game.autumnCounter] = unit;
                 server.Game.update = true;
                 server.Game.updateCommand = "spawn_unit_autumn";
                 break;
@@ -167,7 +176,8 @@ function spawnUnitRequest(info){
         switch(unit){
             case 1:
                 if(!updatePlayerResources(playerObject, server.Game, 30)) return;
-                server.Game.WinterUnits[server.Game.winterCounter] = Unit.createKnight();
+                let unit = Unit.createKnight();
+                server.Game.WinterUnits[server.Game.winterCounter] = unit;
                 server.Game.update = true;
                 server.Game.updateCommand = "spawn_unit_winter";
                 break;
@@ -214,7 +224,7 @@ function checkForUpdate(info){
     let game = states[gameID].Game;
     let dataObj = new Data("update", "");
     let updateObj = new Update();
-    if(game.update = true){
+    if(game.update === true){
         switch (game.updateCommand){
             case "p1_resource_change":
                 updateObj.command = "resources_update";
@@ -239,7 +249,8 @@ function checkForUpdate(info){
                 break;
             case "spawn_unit_autumn":
                 updateObj.command = "spawn_unit_autumn";
-                updateObj.updateObj = new SpawnUnit(1, "knight", findResourceAutumn(game));
+                updateObj.updateObj = JSON.stringify(new SpawnUnit(1, "knight", findResourceAutumn(game)));
+                console.log(updateObj);
                 dataObj.info = JSON.stringify(updateObj);
                 game.player1.ws.send(JSON.stringify(dataObj));
                 game.player2.ws.send(JSON.stringify(dataObj));
@@ -375,12 +386,13 @@ function sendServerGuestID(info, ws){
 
 function playerIDConfirm(info, ws){
     console.log(info)
-    if(playerBase[info] != null) {
+    let idNum = parseInt(info);
+    if(playerBase[idNum] != null) {
         let obj = new Data("generate_player_ID", "")
         ws.send(JSON.stringify(obj))
         return
     }
-    playerBase[info] = new Player(ws, info)
+    playerBase[idNum] = new Player(ws, idNum)
 }
 
 function gameIDConfirm(info, ws){
