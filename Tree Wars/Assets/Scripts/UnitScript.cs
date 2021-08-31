@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TW.NetworkBehavior;
 
 namespace TW.Units
 {   
@@ -51,7 +52,10 @@ namespace TW.Units
         void Update(){
             if(death()){
                 timer += Time.deltaTime;
-                if(timer >= delay)  GameObject.Destroy(this.gameObject);
+                if(timer >= delay)  {
+                    if(WebSocketScript.checkIsHost()) WebSocketScript.sendUnitDeath(getName(), getColor());
+                    GameObject.Destroy(this.gameObject);
+                }
             }
         }
 

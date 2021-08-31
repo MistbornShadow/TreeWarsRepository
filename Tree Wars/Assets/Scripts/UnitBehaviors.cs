@@ -85,7 +85,6 @@ public class UnitBehaviors : MonoBehaviour
 
     public void attackEnemy(){
         timer += Time.deltaTime;
-        Debug.Log(timer);
         if(timer > delay){
             front.loseHealth(this._unit.attack);
             timer = 0.0f;

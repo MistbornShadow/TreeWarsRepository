@@ -23,7 +23,7 @@ public class GameBehavior : MonoBehaviour
 
     public class SpawnUnit{
         public int team;
-        public string type;
+        public string unit;
         public int newResource;
     }
     void Start()
@@ -58,15 +58,17 @@ public class GameBehavior : MonoBehaviour
                     setResourceText();
                     break;
                 case "spawn_unit_winter":
+                    Debug.Log(updateObjectString);
                     var winterSpawnObj = JsonUtility.FromJson<SpawnUnit>(updateObjectString);
-                    spawnUnit(winterSpawnObj.type, winterSpawn);
+                    Debug.Log(winterSpawnObj.unit);
+                    spawnUnit(winterSpawnObj.unit, winterSpawn);
                     if(player.team == winterSpawnObj.team) player.updateResource(winterSpawnObj.newResource);
                     break;
                 case "spawn_unit_autumn":
                     Debug.Log(updateObjectString);
                     var autumnSpawnObj = JsonUtility.FromJson<SpawnUnit>(updateObjectString);
                     Debug.Log(autumnSpawnObj.team);
-                    spawnUnit(autumnSpawnObj.type, autumnSpawn);
+                    spawnUnit(autumnSpawnObj.unit, autumnSpawn);
                     if(player.team == autumnSpawnObj.team) player.updateResource(autumnSpawnObj.newResource);
                     break;
                 default:

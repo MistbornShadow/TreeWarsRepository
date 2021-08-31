@@ -90,6 +90,9 @@ wss.on('connection', (ws)=>{
             case "interval_resource_increase":
                 updateGameIntervalResourceIncrease(parsedData.info);
                 break;
+            case "unit_death":
+                updateGameUnitDeath(parsedData.info);
+                break;
             default:
                 console.log("Unknown command: " + parsedData.type)
         }
@@ -100,6 +103,10 @@ wss.on('connection', (ws)=>{
         console.log('data state %o', states)
     })
 });
+
+function updateGameUnitDeath(info){
+    console.log("Do something with this function, maybe.");
+}
 
 function findPlayer(playerID, game){
     if(game.player1.playerID === playerID) return game.player1;
@@ -250,19 +257,18 @@ function checkForUpdate(info){
             case "spawn_unit_autumn":
                 updateObj.command = "spawn_unit_autumn";
                 updateObj.updateObj = JSON.stringify(new SpawnUnit(1, "knight", findResourceAutumn(game)));
-                console.log(updateObj);
                 dataObj.info = JSON.stringify(updateObj);
                 game.player1.ws.send(JSON.stringify(dataObj));
                 game.player2.ws.send(JSON.stringify(dataObj));
-                game.autumnCounter++;
+                game.autumnUnitCounter++;
                 break;
             case "spawn_unit_winter":
                 updateObj.command = "spawn_unit_winter";
-                updateObj.updateObj = new SpawnUnit(2, "knight", findResourceWinter(game));
+                updateObj.updateObj = JSON.stringify(new SpawnUnit(2, "knight", findResourceWinter(game)));
                 dataObj.info = JSON.stringify(updateObj);
                 game.player1.ws.send(JSON.stringify(dataObj));
                 game.player2.ws.send(JSON.stringify(dataObj));
-                game.winterCounter++;
+                game.winterUnitCounter++;
                 break;
             default:
                 console.log("ERROR: " + game.updateCommand);

@@ -362,5 +362,14 @@ namespace TW.NetworkBehavior
             string serializeRequest = JsonUtility.ToJson(request);
             ws.Send(serializeRequest);    
         }
+
+        public static void sendUnitDeath(string name, int color){
+            DataObject request = new DataObject();
+            request.type = "unit_death";
+            request.info = gameID.ToString();
+
+            string serializeRequest = JsonUtility.ToJson(request);
+            ws.Send(serializeRequest);               
+        }
     }
 }

@@ -10,8 +10,10 @@ class Game {
         this.p2IntervalResourceIncrease = 10;
         this.AutumnUnits = {};
         this.WinterUnits = {};
-        this.autumnCounter = 0;
-        this.winterCounter = 0;
+        this.autumnUnitCounter = 0;
+        this.winterUnitCounter = 0;
+        this.autumnUnitDeathCounter = 0;
+        this.winterUnitDeathCounter = 0;
     }
 
     addResourceP1(resource){

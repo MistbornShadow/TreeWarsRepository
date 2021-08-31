@@ -9,6 +9,7 @@ namespace TW.SpawnBehavior
         public GameObject knight;
         
         public void mainSpawnFunction(string info){
+            Debug.Log(info);
             switch(info){
                 case "knight":
                     SpawnKnight();
